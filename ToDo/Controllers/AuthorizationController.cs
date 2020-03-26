@@ -3,17 +3,21 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using SaltyHasher;
+using ToDo.Entities;
 using ToDo.Models.Account;
 
 namespace ToDo.Controllers
 {
     public class AuthorizationController : Controller
     {
-        private ApplicationDbContext dbContext;
+        private DbSet<User> _users;
 
         public AuthorizationController(ApplicationDbContext applicationDbContext)
         {
-            dbContext = applicationDbContext;
+            _users = applicationDbContext.Users;
         }
 
         [HttpGet]
@@ -24,8 +28,13 @@ namespace ToDo.Controllers
 
         [HttpPost]
         // [ValidateAntiForgeryToken]
-        public IActionResult Login(LoginModel loginModel)
+        public async Task<IActionResult> Login(LoginModel loginModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(loginModel);
+            }
+
             return Redirect("/");
         }
 
@@ -37,9 +46,15 @@ namespace ToDo.Controllers
 
         [HttpPost]
         // [ValidateAntiForgeryToken]
-        public IActionResult Register(RegisterModel registerModel)
+        public async Task<IActionResult> Register(RegisterModel registerModel)
         {
-            return Redirect("/");
+            if (!ModelState.IsValid)
+            {
+                return View(registerModel);
+            }
+            var saltyHash = SaltyHash.Create(registerModel.Password);
+            
+            return RedirectToAction("Index", "Home");
         }
 
         [Authorize]

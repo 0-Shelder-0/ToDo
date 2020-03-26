@@ -5,6 +5,7 @@ namespace ToDo.Models.Account
     public class RegisterModel
     {
         [Required(ErrorMessage = "Please enter correct email")]
+        [EmailAddress]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
