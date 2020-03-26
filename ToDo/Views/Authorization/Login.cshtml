@@ -1,0 +1,65 @@
+@model ToDo.Models.Account.LoginModel
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <main role="main" class="pb-3">
+
+
+        <h1>Log in</h1>
+        <div class="row">
+            <div class="col-md-4">
+                <section>
+                    <form id="account" method="post" asp-action="Login" novalidate="novalidate">
+                        <h4>Use a local account to log in.</h4>
+                        <hr>
+                        <div class="text-danger validation-summary-valid" data-valmsg-summary="true">
+                            <ul>
+                                <li style="display:none"></li>
+                            </ul>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">Email</label>
+                            <input class="form-control" asp-for="Email">
+                            <span class="text-danger field-validation-valid" asp-validation-for="Password"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">Password</label>
+                            <input class="form-control" asp-for="Password">
+                            <span class="text-danger field-validation-valid" asp-validation-for="Password"></span>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label for="Input_RememberMe">
+                                    <input type="checkbox" data-val="true" data-val-required="The Remember me? field is required." id="Input_RememberMe" name="Input.RememberMe" value="true">
+                                    Remember me?
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button id="login-submit" type="submit" class="btn btn-primary">Log in</button>
+                        </div>
+                        <div class="form-group">
+                            <p>
+                                <a asp-action="Register">Register as a new user</a>
+                            </p>
+                        </div>
+                        <input name="__RequestVerificationToken" type="hidden" value="CfDJ8NRX7Fej6w1Fuszv00pG_4LkezNpd4is2R66-N_JTeyWTS1ZmuhhtBb9j7pwCKarNENdzlIS4D2sKpBqKEklqT1Cutw2z_kX_wrZk1v48UqDWhgRep23TNRjOi6tSAbsBas22vsYEYZ9stUJmjM1Jho"><input name="Input.RememberMe" type="hidden" value="false">
+                    </form>
+                </section>
+            </div>
+        </div>
+
+
+    </main>
+</head>
+<body>
+<div>
+
+</div>
+</body>
+</html>

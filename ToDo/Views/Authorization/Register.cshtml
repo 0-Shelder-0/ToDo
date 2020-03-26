@@ -1,0 +1,53 @@
+@model ToDo.Models.Account.RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <main role="main" class="pb-3">
+
+        <h1>Register</h1>
+
+        <div class="row">
+            <div class="col-md-4">
+                <form id="registerForm" method="post" asp-action="Register" novalidate="novalidate">
+                    <h4>Create a new account.</h4>
+                    <hr>
+                    <div class="text-danger validation-summary-valid" data-valmsg-summary="true">
+                        <ul>
+                            <li style="display:none"></li>
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Email</label>
+                        <input class="form-control" asp-for="Email">
+                        <span class="text-danger field-validation-valid" asp-validation-for="Email"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Password</label>
+                        <input class="form-control" asp-for="Password">
+                        <span class="text-danger field-validation-valid" asp-validation-for="Password"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Confirm password</label>
+                        <input class="form-control" asp-for="ConfirmPassword">
+                        <span class="text-danger field-validation-valid" asp-validation-for="ConfirmPassword"></span>
+                    </div>
+                    <button id="registerSubmit" type="submit" class="btn btn-primary">Register</button>
+                    <input name="__RequestVerificationToken" type="hidden" value="CfDJ8NRX7Fej6w1Fuszv00pG_4I0QeLmmm1YQBn5zenWV1GlqBGiJtfpAlmZYyQN2rTbDCXWzDOSlhhgTcezj8E9wZLS64Kgdp8nAX7IqPQXcjs5HtYAGR19g6xwMEh0t3iacgXwGXBN4_DaD9XCgV9TCZ8">
+                </form>
+            </div>
+        </div>
+
+
+    </main>
+</head>
+<body>
+<div>
+
+</div>
+</body>
+</html>
