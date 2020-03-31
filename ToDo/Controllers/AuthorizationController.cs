@@ -39,7 +39,7 @@ namespace ToDo.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = _userRepository.GetUsers().FirstOrDefault(u => u.Email == loginModel.Email);
+                var user = _userRepository.GetUserByEmail(loginModel.Email);
                 if (user == null)
                 {
                     ModelState.AddModelError("Email", "User with this email does not exist");
@@ -57,18 +57,18 @@ namespace ToDo.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult SignUp()
         {
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterModel registerModel)
+        public async Task<IActionResult> SignUp(RegisterModel registerModel)
         {
             if (ModelState.IsValid)
             {
-                if (_userRepository.GetUsers().FirstOrDefault(u => u.Email == registerModel.Email) != null)
+                if (_userRepository.GetUserByEmail(registerModel.Email) != null)
                 {
                     ModelState.AddModelError("Email", "Email already exists");
                     return View(registerModel);
@@ -90,9 +90,34 @@ namespace ToDo.Controllers
         }
 
         [Authorize]
-        public IActionResult Account()
+        public IActionResult Settings()
         {
             return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public IActionResult ChangePassword(ChangePasswordModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = _userRepository.GetUserByEmail(User.Identity.Name);
+                var saltyHash = new SaltyHash(user.Hash, user.Salt);
+                if (saltyHash.Validate(model.CurrentPassword))
+                {
+                    var newPassword = SaltyHash.Create(model.NewPassword);
+                    user.Hash = newPassword.Hash;
+                    user.Salt = newPassword.Salt;
+                    _userRepository.UpdateUser(user);
+                    _userRepository.Save();
+                }
+                else
+                {
+                    ModelState.AddModelError("Password", "Please enter correct password");
+                }
+            }
+            return View("Settings");
         }
 
         private async Task Authenticate(string userName)

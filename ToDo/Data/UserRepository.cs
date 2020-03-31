@@ -21,6 +21,11 @@ namespace ToDo.Data
             return _dbContext.Users.ToList();
         }
 
+        public User GetUserByEmail(string email)
+        {
+            return _dbContext.Users.FirstOrDefault(user => user.Email == email);
+        }
+
         public User GetUserById(int userId)
         {
             return _dbContext.Users.Find(userId);

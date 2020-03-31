@@ -7,6 +7,7 @@ namespace ToDo.Interfaces
     public interface IUserRepository : IDisposable
     {
         IEnumerable<User> GetUsers();
+        User GetUserByEmail(string email);
         User GetUserById(int userId);
         void InsertUser(User user);
         void DeleteUser(int userId);
