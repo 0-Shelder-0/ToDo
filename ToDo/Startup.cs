@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ToDo.Data;
+using ToDo.Interfaces;
 
 namespace ToDo
 {
@@ -26,9 +27,13 @@ namespace ToDo
                 options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<ApplicationDbContext>();
-            // services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                    // .AddCookie(options => { options.LoginPath = new PathString("Authorization/Login"); });
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(options =>
+                               {
+                                   options.LoginPath = new PathString("/Authorization/Login");
+                               });
             services.AddControllersWithViews();
+            services.AddTransient<IUserRepository, UserRepository>();
             services.AddRazorPages();
         }
 
