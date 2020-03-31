@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -8,17 +11,20 @@ using Microsoft.EntityFrameworkCore;
 using SaltyHasher;
 using ToDo.Data;
 using ToDo.Entities;
+using ToDo.Interfaces;
 using ToDo.Models.Account;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ToDo.Controllers
 {
     public class AuthorizationController : Controller
     {
-        private DbSet<User> _users;
+        private readonly IUserRepository _userRepository;
 
-        public AuthorizationController(ApplicationDbContext applicationDbContext)
+        public AuthorizationController(IUserRepository userRepository)
         {
-            _users = applicationDbContext.Users;
+            _userRepository = userRepository;
         }
 
         [HttpGet]
@@ -29,14 +35,25 @@ namespace ToDo.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(LoginModel loginModel)
+        public async Task<IActionResult> Login(LoginModel loginModel)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(loginModel);
+                var user = _userRepository.GetUsers().FirstOrDefault(u => u.Email == loginModel.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError("Email", "User with this email does not exist");
+                    return View(loginModel);
+                }
+                var saltyHash = new SaltyHash(user.Hash, user.Salt);
+                if (saltyHash.Validate(loginModel.Password))
+                {
+                    await Authenticate(loginModel.Email);
+                    return RedirectToAction("Index", "Home");
+                }
+                ModelState.AddModelError("Password", "Please enter correct password");
             }
-
-            return Redirect("/");
+            return View(loginModel);
         }
 
         [HttpGet]
@@ -47,27 +64,46 @@ namespace ToDo.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Register(RegisterModel registerModel)
+        public async Task<IActionResult> Register(RegisterModel registerModel)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(registerModel);
+                if (_userRepository.GetUsers().FirstOrDefault(u => u.Email == registerModel.Email) != null)
+                {
+                    ModelState.AddModelError("Email", "Email already exists");
+                    return View(registerModel);
+                }
+                var saltyHash = SaltyHash.Create(registerModel.Password);
+                var user = new User {Email = registerModel.Email, Hash = saltyHash.Hash, Salt = saltyHash.Salt};
+                _userRepository.InsertUser(user);
+                _userRepository.Save();
+                await Authenticate(registerModel.Email);
             }
-            var saltyHash = SaltyHash.Create(registerModel.Password);
-
             return RedirectToAction("Index", "Home");
         }
 
         [Authorize]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            return Redirect("/");
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
         }
 
         [Authorize]
         public IActionResult Account()
         {
             return View();
+        }
+
+        private async Task Authenticate(string userName)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+            };
+            var id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType,
+                                        ClaimsIdentity.DefaultRoleClaimType);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
     }
 }

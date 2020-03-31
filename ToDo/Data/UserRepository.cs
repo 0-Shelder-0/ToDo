@@ -58,7 +58,7 @@ namespace ToDo.Data
                     _dbContext.Dispose();
                 }
             }
-            this._disposed = true;
+            _disposed = true;
         }
 
         public void Dispose()

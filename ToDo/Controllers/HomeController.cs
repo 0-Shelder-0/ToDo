@@ -16,7 +16,7 @@ namespace ToDo.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return User.Identity.IsAuthenticated ? View() : View("StartPage");
         }
 
         public IActionResult Privacy()
