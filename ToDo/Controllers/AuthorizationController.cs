@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SaltyHasher;
+using ToDo.Data;
 using ToDo.Entities;
 using ToDo.Models.Account;
 
@@ -27,8 +28,8 @@ namespace ToDo.Controllers
         }
 
         [HttpPost]
-        // [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginModel loginModel)
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(LoginModel loginModel)
         {
             if (!ModelState.IsValid)
             {
@@ -45,15 +46,15 @@ namespace ToDo.Controllers
         }
 
         [HttpPost]
-        // [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterModel registerModel)
+        [ValidateAntiForgeryToken]
+        public IActionResult Register(RegisterModel registerModel)
         {
             if (!ModelState.IsValid)
             {
                 return View(registerModel);
             }
             var saltyHash = SaltyHash.Create(registerModel.Password);
-            
+
             return RedirectToAction("Index", "Home");
         }
 

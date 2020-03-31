@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ToDo.Data;
 
 namespace ToDo
 {
@@ -23,6 +26,8 @@ namespace ToDo
                 options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<ApplicationDbContext>();
+            // services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    // .AddCookie(options => { options.LoginPath = new PathString("Authorization/Login"); });
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
@@ -48,12 +53,12 @@ namespace ToDo
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                // endpoints.MapRazorPages();
-            });
+                             {
+                                 endpoints.MapControllerRoute(
+                                     name: "default",
+                                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                                 // endpoints.MapRazorPages();
+                             });
         }
     }
 }
