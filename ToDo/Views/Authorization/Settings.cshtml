@@ -19,16 +19,31 @@
     <form id="account" method="post" asp-antiforgery="true" asp-action="ChangePassword" novalidate="novalidate">
         <div class="form-group">
             <label class="col-form-label">Current Password</label>
+            <span class="text-danger">
+                <div>
+                    @Html.ValidationMessageFor(model => model.CurrentPassword)
+                </div>
+            </span>
             <input class="form-control" asp-for="CurrentPassword">
             <span class="invalid-feedback" asp-validation-for="CurrentPassword"></span>
         </div>
         <div class="form-group">
             <label class="col-form-label">New Password</label>
+            <span class="text-danger">
+                <div>
+                    @Html.ValidationMessageFor(model => model.NewPassword)
+                </div>
+            </span>
             <input class="form-control" asp-for="NewPassword">
             <span class="invalid-feedback" asp-validation-for="NewPassword"></span>
         </div>
         <div class="form-group">
             <label class="col-form-label">Confirm New Password</label>
+            <span class="text-danger">
+                <div>
+                    @Html.ValidationMessageFor(model => model.ConfirmNewPassword)
+                </div>
+            </span>
             <input class="form-control" asp-for="ConfirmNewPassword">
             <span class="invalid-feedback" asp-validation-for="ConfirmNewPassword"></span>
         </div>
@@ -40,8 +55,3 @@
 </div>
 </body>
 </html>
-
-@section Scripts
-{
-    <partial name="_ValidationScriptsPartial"/>
-}
