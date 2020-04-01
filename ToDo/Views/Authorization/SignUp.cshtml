@@ -1,6 +1,6 @@
 @model ToDo.Models.Account.RegisterModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "SignUp";
 }
 
 <!DOCTYPE html>
@@ -15,23 +15,34 @@
                 <form id="registerForm" asp-antiforgery="true" method="post" asp-action="SignUp" novalidate="novalidate">
                     <h4 class="text-center">Create a new account.</h4>
                     <hr>
-                    <div class="text-danger" data-valmsg-summary="true">
-                        <ul>
-                            <li style="display:none"></li>
-                        </ul>
-                    </div>
+
                     <div class="form-group">
                         <label class="col-form-label">Email</label>
-                        <input class="form-control input-validation-error" asp-for="Email">
+                        <span class="text-danger">
+                            <div>
+                                @Html.ValidationMessageFor(model => model.Email)
+                            </div>
+                        </span>
+                        <input class="form-control" asp-for="Email">
                         <span class="invalid-feedback" asp-validation-for="Email"></span>
                     </div>
                     <div class="form-group">
                         <label class="col-form-label">Password</label>
+                        <span class="text-danger">
+                            <div>
+                                @Html.ValidationMessageFor(model => model.Password)
+                            </div>
+                        </span>
                         <input class="form-control" asp-for="Password">
                         <span class="invalid-feedback" asp-validation-for="Password"></span>
                     </div>
                     <div class="form-group">
                         <label class="col-form-label">Confirm password</label>
+                        <span class="text-danger">
+                            <div>
+                                @Html.ValidationMessageFor(model => model.ConfirmPassword)
+                            </div>
+                        </span>
                         <input class="form-control" asp-for="ConfirmPassword">
                         <span class="invalid-feedback" asp-validation-for="ConfirmPassword"></span>
                     </div>
@@ -47,8 +58,3 @@
 
 </body>
 </html>
-
-@section scripts{
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-}
