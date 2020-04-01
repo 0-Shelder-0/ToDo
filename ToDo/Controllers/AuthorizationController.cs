@@ -1,20 +1,14 @@
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using SaltyHasher;
-using ToDo.Data;
 using ToDo.Entities;
 using ToDo.Interfaces;
 using ToDo.Models.Account;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ToDo.Controllers
 {
@@ -42,7 +36,7 @@ namespace ToDo.Controllers
                 var user = _userRepository.GetUserByEmail(loginModel.Email);
                 if (user == null)
                 {
-                    ModelState.AddModelError("Email", "User with this email does not exist");
+                    ModelState.AddModelError("Email", "User with this email does not exist.");
                     return View(loginModel);
                 }
                 var saltyHash = new SaltyHash(user.Hash, user.Salt);
@@ -51,7 +45,7 @@ namespace ToDo.Controllers
                     await Authenticate(loginModel.Email);
                     return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError("Password", "Please enter correct password");
+                ModelState.AddModelError("Password", "Please enter correct password.");
             }
             return View(loginModel);
         }
@@ -70,7 +64,7 @@ namespace ToDo.Controllers
             {
                 if (_userRepository.GetUserByEmail(registerModel.Email) != null)
                 {
-                    ModelState.AddModelError("Email", "Email already exists");
+                    ModelState.AddModelError("Email", "A user with this email already exists.");
                     return View(registerModel);
                 }
                 var saltyHash = SaltyHash.Create(registerModel.Password);
@@ -78,8 +72,9 @@ namespace ToDo.Controllers
                 _userRepository.InsertUser(user);
                 _userRepository.Save();
                 await Authenticate(registerModel.Email);
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
+            return View(registerModel);
         }
 
         [Authorize]
