@@ -28,12 +28,11 @@ namespace ToDo
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .AddCookie(options =>
-                               {
-                                   options.LoginPath = new PathString("/Authorization/Login");
-                               });
+                    .AddCookie(options => { options.LoginPath = new PathString("/Authorization/Login"); });
             services.AddControllersWithViews();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IBoardRepository, BoardRepository>();
+            services.AddTransient<IRecordRepository, RecordRepository>();
             services.AddRazorPages();
         }
 
