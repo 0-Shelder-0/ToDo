@@ -109,7 +109,7 @@ namespace ToDo.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("CurrentPassword", "Please enter correct password");
+                    ModelState.AddModelError("CurrentPassword", "Please enter correct password.");
                 }
             }
             return View("Settings");

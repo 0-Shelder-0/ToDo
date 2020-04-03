@@ -7,7 +7,7 @@ using ToDo.Interfaces;
 
 namespace ToDo.Data
 {
-    public class UserRepository : IUserRepository
+    public sealed class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -54,7 +54,7 @@ namespace ToDo.Data
 
         private bool _disposed;
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!_disposed)
             {
