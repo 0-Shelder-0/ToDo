@@ -1,5 +1,4 @@
 @model ToDo.Models.Board.BoardModel
-
 @{
     ViewData["Title"] = "Board";
 }
@@ -10,10 +9,10 @@
 <head>
     <div class="container">
         <div class="row">
-            @foreach (var record in Model.Records)
+            @foreach (var record in Model.Columns)
             {
                 <div class="container">
-                    @record.Value
+                    @record.Name
                 </div>
             }
 

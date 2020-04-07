@@ -51,7 +51,7 @@ namespace ToDo.Controllers
                 var board = new Board {Name = model.Name, User = user, UserId = user.Id};
                 _boards.InsertEntity(board);
                 _boards.Save();
-                var boardModel = new BoardModel {BoardId = board.Id, Records = new List<Record>()};
+                var boardModel = new BoardModel {BoardId = board.Id, Columns = new List<Column>()};
                 return Board(boardModel);
             }
             return RedirectToAction("Boards");

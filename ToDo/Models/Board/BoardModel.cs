@@ -7,6 +7,6 @@ namespace ToDo.Models.Board
     public class BoardModel : PageModel
     {
         public int BoardId { get; set; }
-        public IEnumerable<Record> Records { get; set; }
+        public IEnumerable<Column> Columns { get; set; }
     }
 }

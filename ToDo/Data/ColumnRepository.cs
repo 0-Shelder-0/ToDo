@@ -7,28 +7,28 @@ using ToDo.Interfaces;
 
 namespace ToDo.Data
 {
-    public class ListRepository : IListRepository
+    public class ColumnRepository : IColumnRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public ListRepository(ApplicationDbContext dbContext)
+        public ColumnRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public IEnumerable<List> GetLists(int listId)
+        public IEnumerable<Column> GetColumns(int listId)
         {
             return _dbContext.Lists.Where(list => list.BoardId == listId);
         }
 
-        public IEnumerable<List> GetEntities()
+        public IEnumerable<Column> GetEntities()
         {
             return _dbContext.Lists.ToList();
         }
 
-        public void InsertEntity(List list)
+        public void InsertEntity(Column column)
         {
-            _dbContext.Lists.Add(list);
+            _dbContext.Lists.Add(column);
         }
 
         public void DeleteEntity(int listId)
@@ -37,9 +37,9 @@ namespace ToDo.Data
             _dbContext.Lists.Remove(list);
         }
 
-        public void UpdateEntity(List List)
+        public void UpdateEntity(Column column)
         {
-            _dbContext.Entry(List).State = EntityState.Modified;
+            _dbContext.Entry(column).State = EntityState.Modified;
         }
 
         public void Save()

@@ -32,7 +32,7 @@ namespace ToDo
             services.AddControllersWithViews();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IBoardRepository, BoardRepository>();
-            services.AddTransient<IListRepository, ListRepository>();
+            services.AddTransient<IColumnRepository, ColumnRepository>();
             services.AddTransient<IRecordRepository, RecordRepository>();
             services.AddRazorPages();
         }
