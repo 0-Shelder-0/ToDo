@@ -6,6 +6,6 @@ namespace ToDo.Entities
         public string Value { get; set; }
         
         public int ListId { get; set; }
-        public Board List { get; set; }
+        public List List { get; set; }
     }
 }
