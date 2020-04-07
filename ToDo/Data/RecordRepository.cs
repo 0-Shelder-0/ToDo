@@ -16,23 +16,28 @@ namespace ToDo.Data
             _dbContext = dbContext;
         }
 
-        public IEnumerable<Record> GetRecords(int boardId)
+        public IEnumerable<Record> GetRecords(int listId)
         {
-            return _dbContext.Records.Where(record => record.BoardId == boardId);
+            return _dbContext.Records.Where(record => record.ListId == listId);
         }
 
-        public void InsertRecord(Record record)
+        public IEnumerable<Record> GetEntities()
+        {
+            return _dbContext.Records.ToList();
+        }
+
+        public void InsertEntity(Record record)
         {
             _dbContext.Records.Add(record);
         }
 
-        public void DeleteRecord(int recordId)
+        public void DeleteEntity(int recordId)
         {
             var record = _dbContext.Records.Find(recordId);
             _dbContext.Records.Remove(record);
         }
 
-        public void UpdateRecord(Record record)
+        public void UpdateEntity(Record record)
         {
             _dbContext.Entry(record).State = EntityState.Modified;
         }

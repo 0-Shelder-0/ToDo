@@ -4,12 +4,8 @@ using ToDo.Entities;
 
 namespace ToDo.Interfaces
 {
-    public interface IRecordRepository : IDisposable
+    public interface IRecordRepository : IDisposable, IRepository<Record>
     {
-        IEnumerable<Record> GetRecords(int boardId);
-        void InsertRecord(Record record);
-        void DeleteRecord(int recordId);
-        void UpdateRecord(Record record);
-        void Save();
+        IEnumerable<Record> GetRecords(int listId);
     }
 }

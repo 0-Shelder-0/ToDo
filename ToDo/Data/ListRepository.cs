@@ -7,39 +7,39 @@ using ToDo.Interfaces;
 
 namespace ToDo.Data
 {
-    public class BoardRepository : IBoardRepository
+    public class ListRepository : IListRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public BoardRepository(ApplicationDbContext dbContext)
+        public ListRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public IEnumerable<Board> GetBoards(int userId)
+        public IEnumerable<List> GetLists(int listId)
         {
-            return _dbContext.Boards.Where(board => board.UserId == userId);
+            return _dbContext.Lists.Where(list => list.BoardId == listId);
         }
 
-        public IEnumerable<Board> GetEntities()
+        public IEnumerable<List> GetEntities()
         {
-            return _dbContext.Boards.ToList();
+            return _dbContext.Lists.ToList();
         }
 
-        public void InsertEntity(Board board)
+        public void InsertEntity(List list)
         {
-            _dbContext.Boards.Add(board);
+            _dbContext.Lists.Add(list);
         }
 
-        public void DeleteEntity(int boardId)
+        public void DeleteEntity(int listId)
         {
-            var board = _dbContext.Boards.Find(boardId);
-            _dbContext.Boards.Remove(board);
+            var list = _dbContext.Lists.Find(listId);
+            _dbContext.Lists.Remove(list);
         }
 
-        public void UpdateEntity(Board board)
+        public void UpdateEntity(List List)
         {
-            _dbContext.Entry(board).State = EntityState.Modified;
+            _dbContext.Entry(List).State = EntityState.Modified;
         }
 
         public void Save()

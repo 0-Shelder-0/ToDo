@@ -1,0 +1,31 @@
+@model ToDo.Models.Board.AllBoardsModel
+
+@{
+    ViewData["Title"] = "Boards";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <div class="container">
+        <div class="row">
+            @foreach (var board in Model.Boards)
+            {
+                <div class="container">
+                    @board.Name
+                </div>
+            }
+
+            <partial name="_CreateBoardPartial"/>
+        </div>
+    </div>
+
+</head>
+<body>
+<div>
+
+</div>
+</body>
+</html>

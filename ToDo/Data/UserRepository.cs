@@ -16,7 +16,7 @@ namespace ToDo.Data
             _dbContext = dbContext;
         }
 
-        public IEnumerable<User> GetUsers()
+        public IEnumerable<User> GetEntities()
         {
             return _dbContext.Users.ToList();
         }
@@ -31,18 +31,18 @@ namespace ToDo.Data
             return _dbContext.Users.Find(userId);
         }
 
-        public void InsertUser(User user)
+        public void InsertEntity(User user)
         {
             _dbContext.Users.Add(user);
         }
 
-        public void DeleteUser(int userId)
+        public void DeleteEntity(int userId)
         {
             var user = _dbContext.Users.Find(userId);
             _dbContext.Users.Remove(user);
         }
 
-        public void UpdateUser(User user)
+        public void UpdateEntity(User user)
         {
             _dbContext.Entry(user).State = EntityState.Modified;
         }

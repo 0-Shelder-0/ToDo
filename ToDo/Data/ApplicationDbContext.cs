@@ -15,6 +15,7 @@ namespace ToDo.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Board> Boards { get; set; }
+        public DbSet<List> Lists { get; set; }
         public DbSet<Record> Records { get; set; }
     }
 }

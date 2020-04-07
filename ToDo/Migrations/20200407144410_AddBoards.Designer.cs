@@ -8,7 +8,7 @@ using ToDo.Data;
 namespace ToDo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200403153240_AddBoards")]
+    [Migration("20200407144410_AddBoards")]
     partial class AddBoards
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,7 +37,7 @@ namespace ToDo.Migrations
                     b.ToTable("Boards");
                 });
 
-            modelBuilder.Entity("ToDo.Entities.Record", b =>
+            modelBuilder.Entity("ToDo.Entities.List", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -46,12 +46,31 @@ namespace ToDo.Migrations
                     b.Property<int>("BoardId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Value")
+                    b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BoardId");
+
+                    b.ToTable("Lists");
+                });
+
+            modelBuilder.Entity("ToDo.Entities.Record", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ListId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ListId");
 
                     b.ToTable("Records");
                 });
@@ -85,11 +104,20 @@ namespace ToDo.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ToDo.Entities.Record", b =>
+            modelBuilder.Entity("ToDo.Entities.List", b =>
                 {
                     b.HasOne("ToDo.Entities.Board", "Board")
                         .WithMany()
                         .HasForeignKey("BoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ToDo.Entities.Record", b =>
+                {
+                    b.HasOne("ToDo.Entities.Board", "List")
+                        .WithMany()
+                        .HasForeignKey("ListId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
