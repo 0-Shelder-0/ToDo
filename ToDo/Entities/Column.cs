@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ToDo.Entities
 {
     public class Column
@@ -6,6 +8,8 @@ namespace ToDo.Entities
         public string Name { get; set; }
 
         public int BoardId { get; set; }
-        public Board Board { get; set; }
+        public virtual Board Board { get; set; }
+
+        public virtual List<Record> Records { get; set; }
     }
 }

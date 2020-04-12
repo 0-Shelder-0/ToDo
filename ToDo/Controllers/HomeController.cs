@@ -7,13 +7,13 @@ using ToDo.Data;
 using ToDo.Entities;
 using ToDo.Interfaces;
 using ToDo.Models;
+using ToDo.Models.Board;
 
 namespace ToDo.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -22,7 +22,11 @@ namespace ToDo.Controllers
 
         public IActionResult Index()
         {
-            return User.Identity.IsAuthenticated ? View() : View("StartPage");
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Boards", "Board");
+            }
+            return View("StartPage");
         }
 
         public IActionResult Privacy()

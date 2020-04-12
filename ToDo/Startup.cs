@@ -24,7 +24,9 @@ namespace ToDo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(
-                options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+                options => options
+                          .UseLazyLoadingProxies()
+                          .UseMySql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -60,8 +62,11 @@ namespace ToDo
             app.UseEndpoints(endpoints =>
                              {
                                  endpoints.MapControllerRoute(
-                                     name: "default",
-                                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                                     name: "home",
+                                     pattern: "{controller=Home}/{action=Index}");
+                                 endpoints.MapControllerRoute(
+                                     name: "board",
+                                     pattern: "Board/Board/{id}");
                              });
             app.UseStatusCodePagesWithRedirects("/Home/Error");
         }

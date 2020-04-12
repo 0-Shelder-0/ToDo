@@ -16,25 +16,25 @@ namespace ToDo.Data
             _dbContext = dbContext;
         }
 
-        public IEnumerable<Column> GetColumns(int listId)
-        {
-            return _dbContext.Lists.Where(list => list.BoardId == listId);
-        }
-
         public IEnumerable<Column> GetEntities()
         {
-            return _dbContext.Lists.ToList();
+            return _dbContext.Columns.ToList();
+        }
+
+        public Column GetEntityById(int entityId)
+        {
+            return _dbContext.Columns.Find(entityId);
         }
 
         public void InsertEntity(Column column)
         {
-            _dbContext.Lists.Add(column);
+            _dbContext.Columns.Add(column);
         }
 
-        public void DeleteEntity(int listId)
+        public void DeleteEntity(int columnId)
         {
-            var list = _dbContext.Lists.Find(listId);
-            _dbContext.Lists.Remove(list);
+            var column = _dbContext.Columns.Find(columnId);
+            _dbContext.Columns.Remove(column);
         }
 
         public void UpdateEntity(Column column)
@@ -45,6 +45,11 @@ namespace ToDo.Data
         public void Save()
         {
             _dbContext.SaveChanges();
+        }
+
+        public List<Record> GetRecords(int columnId)
+        {
+            return _dbContext.Columns.Find(columnId).Records;
         }
 
         private bool _disposed;

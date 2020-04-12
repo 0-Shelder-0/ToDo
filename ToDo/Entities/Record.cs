@@ -4,8 +4,8 @@ namespace ToDo.Entities
     {
         public int Id { get; set; }
         public string Value { get; set; }
-        
-        public int ListId { get; set; }
-        public Column Column { get; set; }
+
+        public int ColumnId { get; set; }
+        public virtual Column Column { get; set; }
     }
 }

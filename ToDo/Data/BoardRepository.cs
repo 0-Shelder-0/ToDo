@@ -16,9 +16,14 @@ namespace ToDo.Data
             _dbContext = dbContext;
         }
 
-        public IEnumerable<Board> GetBoards(int userId)
+        public List<Column> GetColumns(int boardId)
         {
-            return _dbContext.Boards.Where(board => board.UserId == userId);
+            return _dbContext.Boards.Find(boardId).Columns;
+        }
+
+        public Board GetEntityById(int boardId)
+        {
+            return _dbContext.Boards.Find(boardId);
         }
 
         public IEnumerable<Board> GetEntities()

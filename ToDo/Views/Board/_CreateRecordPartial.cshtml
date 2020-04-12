@@ -1,9 +1,11 @@
-@model ToDo.Models.Board.CreateRecordModel
+@model ToDo.Models.CreateEntity.CreateRecordModel
 
 <form method="post" asp-controller="Board" asp-action="CreateRecord">
-    <div class="form-group">
-        <label class="col-form-label">Name</label>
-        <input class="form-control" asp-for="Value">
+    <div class="form-group input-group">
+        <input class="input-group-prepend form-control" asp-for="Value" value="">
         <span class="invalid-feedback" asp-validation-for="Value"></span>
+        @Html.HiddenFor(x => x.BoardId)
+        @Html.HiddenFor(x => x.ColumnId)
+        <button class="btn btn-primary">+</button>
     </div>
 </form>

@@ -4,9 +4,9 @@ using ToDo.Entities;
 
 namespace ToDo.Interfaces
 {
-    public interface IUserRepository : IDisposable, IRepository<User>
+    public interface IUserRepository : IDisposable, IEntityRepository<User>
     {
         User GetUserByEmail(string email);
-        User GetUserById(int userId);
+        List<Board> GetBoards(int userId);
     }
 }

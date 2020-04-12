@@ -16,17 +16,22 @@ namespace ToDo.Data
             _dbContext = dbContext;
         }
 
-        public IEnumerable<User> GetEntities()
-        {
-            return _dbContext.Users.ToList();
-        }
-
         public User GetUserByEmail(string email)
         {
             return _dbContext.Users.FirstOrDefault(user => user.Email == email);
         }
 
-        public User GetUserById(int userId)
+        public List<Board> GetBoards(int userId)
+        {
+            return _dbContext.Users.Find(userId).Boards;
+        }
+
+        public IEnumerable<User> GetEntities()
+        {
+            return _dbContext.Users.ToList();
+        }
+
+        public User GetEntityById(int userId)
         {
             return _dbContext.Users.Find(userId);
         }

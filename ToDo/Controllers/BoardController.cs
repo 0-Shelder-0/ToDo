@@ -1,9 +1,11 @@
-using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ToDo.Entities;
 using ToDo.Interfaces;
 using ToDo.Models.Board;
+using ToDo.Models.CreateEntity;
 
 namespace ToDo.Controllers
 {
@@ -11,39 +13,41 @@ namespace ToDo.Controllers
     {
         private readonly IUserRepository _users;
         private readonly IBoardRepository _boards;
+        private readonly IColumnRepository _columns;
         private readonly IRecordRepository _records;
 
-        public BoardController(IUserRepository users, IBoardRepository boards, IRecordRepository records)
+        public BoardController(IUserRepository users, IBoardRepository boards, IColumnRepository columns,
+                               IRecordRepository records)
         {
             _users = users;
             _boards = boards;
+            _columns = columns;
             _records = records;
         }
 
         [Authorize]
-        public IActionResult Boards(AllBoardsModel model)
+        [Route("/Board/Board/{id:int}")]
+        public IActionResult Board(int id)
         {
-            return View();
+            var user = _users.GetUserByEmail(User.Identity.Name);
+            var board = user.Boards.FirstOrDefault(b => b.Id == id);
+            if (board == null)
+                return RedirectToAction("Boards");
+            var model = new BoardModel {BoardId = board.Id, Name = board.Name, Columns = board.Columns};
+            return View(model);
         }
 
         [Authorize]
-        public IActionResult Board(BoardModel model)
+        public IActionResult Boards()
         {
+            var user = _users.GetUserByEmail(User.Identity.Name);
+            var model = new AllBoardsModel {Boards = user.Boards};
             return View(model);
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult GetBoards()
-        {
-            var user = _users.GetUserByEmail(User.Identity.Name);
-            var boards = _boards.GetBoards(user.Id);
-            return Content("");
-        }
-
-        [HttpPost]
-        [Authorize]
-        public IActionResult CreateBoard(CreateBoardModel model)
+        public RedirectToActionResult CreateBoard(CreateBoardModel model)
         {
             if (ModelState.IsValid)
             {
@@ -51,17 +55,47 @@ namespace ToDo.Controllers
                 var board = new Board {Name = model.Name, User = user, UserId = user.Id};
                 _boards.InsertEntity(board);
                 _boards.Save();
-                var boardModel = new BoardModel {BoardId = board.Id, Columns = new List<Column>()};
-                return Board(boardModel);
+                return RedirectToAction("Board", new {id = board.Id});
             }
+            ModelState.AddModelError("Name", "Missing name!");
             return RedirectToAction("Boards");
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult CreateRecord(CreateRecordModel model)
+        public RedirectToActionResult CreateColumn(CreateColumnModel model)
         {
-            return Content("");
+            var board = _boards.GetEntityById(model.BoardId);
+            if (ModelState.IsValid)
+            {
+                var column = new Column {Name = model.ColumnName, BoardId = board.Id, Board = board};
+                _columns.InsertEntity(column);
+                _columns.Save();
+            }
+            else
+            {
+                ModelState.AddModelError("Name", "Missing name!");
+            }
+            return RedirectToAction("Board", new {id = board.Id});
+        }
+
+        [HttpPost]
+        [Authorize]
+        public RedirectToActionResult CreateRecord(CreateRecordModel model)
+        {
+            var board = _boards.GetEntityById(model.BoardId);
+            if (ModelState.IsValid)
+            {
+                var column = board.Columns.FirstOrDefault(col => col.Id == model.ColumnId);
+                var record = new Record {Column = column, ColumnId = column.Id, Value = model.Value};
+                _records.InsertEntity(record);
+                _records.Save();
+            }
+            else
+            {
+                ModelState.AddModelError("Name", "Missing name!");
+            }
+            return RedirectToAction("Board", new {id = board.Id});
         }
     }
 }

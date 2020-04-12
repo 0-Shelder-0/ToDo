@@ -4,8 +4,8 @@ using ToDo.Entities;
 
 namespace ToDo.Interfaces
 {
-    public interface IBoardRepository : IDisposable, IRepository<Board>
+    public interface IBoardRepository : IDisposable, IEntityRepository<Board>
     {
-        IEnumerable<Board> GetBoards(int userId);
+        List<Column> GetColumns(int boardId);
     }
 }

@@ -16,14 +16,14 @@ namespace ToDo.Data
             _dbContext = dbContext;
         }
 
-        public IEnumerable<Record> GetRecords(int listId)
-        {
-            return _dbContext.Records.Where(record => record.ListId == listId);
-        }
-
         public IEnumerable<Record> GetEntities()
         {
             return _dbContext.Records.ToList();
+        }
+
+        public Record GetEntityById(int entityId)
+        {
+            return _dbContext.Records.Find(entityId);
         }
 
         public void InsertEntity(Record record)
