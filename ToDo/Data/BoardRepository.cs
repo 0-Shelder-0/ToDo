@@ -7,49 +7,44 @@ using ToDo.Interfaces;
 
 namespace ToDo.Data
 {
-    public sealed class UserRepository : IUserRepository
+    public class BoardRepository : IBoardRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public UserRepository(ApplicationDbContext dbContext)
+        public BoardRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public User GetUserByEmail(string email)
+        public List<Column> GetColumns(int boardId)
         {
-            return _dbContext.Users.FirstOrDefault(user => user.Email == email);
+            return _dbContext.Boards.Find(boardId).Columns;
         }
 
-        public List<Board> GetBoards(int userId)
+        public Board GetEntityById(int boardId)
         {
-            return _dbContext.Users.Find(userId).Boards;
+            return _dbContext.Boards.Find(boardId);
         }
 
-        public IEnumerable<User> GetEntities()
+        public IEnumerable<Board> GetEntities()
         {
-            return _dbContext.Users.ToList();
+            return _dbContext.Boards.ToList();
         }
 
-        public User GetEntityById(int userId)
+        public void InsertEntity(Board board)
         {
-            return _dbContext.Users.Find(userId);
+            _dbContext.Boards.Add(board);
         }
 
-        public void InsertEntity(User user)
+        public void DeleteEntity(int boardId)
         {
-            _dbContext.Users.Add(user);
+            var board = _dbContext.Boards.Find(boardId);
+            _dbContext.Boards.Remove(board);
         }
 
-        public void DeleteEntity(int userId)
+        public void UpdateEntity(Board board)
         {
-            var user = _dbContext.Users.Find(userId);
-            _dbContext.Users.Remove(user);
-        }
-
-        public void UpdateEntity(User user)
-        {
-            _dbContext.Entry(user).State = EntityState.Modified;
+            _dbContext.Entry(board).State = EntityState.Modified;
         }
 
         public void Save()

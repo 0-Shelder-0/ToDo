@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ToDo.Entities
 {
     public class User
@@ -6,5 +8,7 @@ namespace ToDo.Entities
         public string Email { get; set; }
         public string Hash { get; set; }
         public string Salt { get; set; }
+
+        public virtual List<Board> Boards { get; set; }
     }
 }

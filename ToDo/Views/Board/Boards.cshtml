@@ -1,0 +1,33 @@
+@using ToDo.Models.CreateEntity
+@model ToDo.Models.Board.AllBoardsModel
+@{
+    ViewData["Title"] = "Boards";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <div class="container">
+        <div class="row">
+            @foreach (var board in Model.Boards)
+            {
+                <div class="container">
+                    <a asp-controller="Board" asp-action="Board" asp-route-id="@board.Id">
+                        @board.Name
+                    </a>
+                </div>
+            }
+
+            @{ Html.RenderPartial("_CreateBoardPartial", new CreateBoardModel()); }
+        </div>
+    </div>
+
+</head>
+<body>
+<div>
+
+</div>
+</body>
+</html>

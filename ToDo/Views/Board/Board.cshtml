@@ -1,0 +1,47 @@
+@using ToDo.Models.CreateEntity
+@model ToDo.Models.Board.BoardModel
+@{
+    ViewData["Title"] = "Board";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <div class="text-center">
+        <h2>@Model.Name</h2>
+    </div>
+
+    <div class="">
+        <div class="row">
+            @foreach (var column in Model.Columns)
+            {
+                <div class="col-sm-3">
+                    <h3>@column.Name</h3>
+
+                    @if (column.Records != null)
+                    {
+                        foreach (var record in column.Records)
+                        {
+                            <div class="col">
+                                @record.Value
+                            </div>
+                        }
+                    }
+                    @{ Html.RenderPartial("_CreateRecordPartial", new CreateRecordModel {ColumnId = column.Id, BoardId = Model.BoardId}); }
+                </div>
+            }
+
+            <div class="col-sm-3">
+                @{ Html.RenderPartial("_CreateColumnPartial", new CreateColumnModel {BoardId = Model.BoardId}); }
+            </div>
+
+        </div>
+    </div>
+</head>
+<body>
+<div>
+
+</div>
+</body>
+</html>

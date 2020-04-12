@@ -1,0 +1,12 @@
+@model ToDo.Models.CreateEntity.CreateBoardModel
+
+<form method="post" asp-controller="Board" asp-action="CreateBoard">
+    <div class="form-group">
+        <label class="col-form-label">Name</label>
+        <input class="form-control" asp-for="Name">
+        <span class="invalid-feedback" asp-validation-for="Name"></span>
+    </div>
+    <div class="container">
+        <button class="btn btn-primary">+</button>
+    </div>
+</form>

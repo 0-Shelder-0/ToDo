@@ -1,7 +1,13 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ToDo.Data;
+using ToDo.Entities;
+using ToDo.Interfaces;
 using ToDo.Models;
+using ToDo.Models.Board;
 
 namespace ToDo.Controllers
 {
@@ -16,7 +22,11 @@ namespace ToDo.Controllers
 
         public IActionResult Index()
         {
-            return User.Identity.IsAuthenticated ? View() : View("StartPage");
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Boards", "Board");
+            }
+            return View("StartPage");
         }
 
         public IActionResult Privacy()

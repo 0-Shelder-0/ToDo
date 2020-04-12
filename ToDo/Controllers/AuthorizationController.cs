@@ -69,7 +69,7 @@ namespace ToDo.Controllers
                 }
                 var saltyHash = SaltyHash.Create(registerModel.Password);
                 var user = new User {Email = registerModel.Email, Hash = saltyHash.Hash, Salt = saltyHash.Salt};
-                _userRepository.InsertUser(user);
+                _userRepository.InsertEntity(user);
                 _userRepository.Save();
                 await Authenticate(registerModel.Email);
                 return RedirectToAction("Index", "Home");
@@ -104,12 +104,12 @@ namespace ToDo.Controllers
                     var newPassword = SaltyHash.Create(model.NewPassword);
                     user.Hash = newPassword.Hash;
                     user.Salt = newPassword.Salt;
-                    _userRepository.UpdateUser(user);
+                    _userRepository.UpdateEntity(user);
                     _userRepository.Save();
                 }
                 else
                 {
-                    ModelState.AddModelError("CurrentPassword", "Please enter correct password");
+                    ModelState.AddModelError("CurrentPassword", "Please enter correct password.");
                 }
             }
             return View("Settings");
