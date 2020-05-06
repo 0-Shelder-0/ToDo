@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ToDo.Entities;
@@ -16,8 +15,8 @@ namespace ToDo.Controllers
         private readonly IColumnRepository _columns;
         private readonly IRecordRepository _records;
 
-        public BoardController(IUserRepository users, IBoardRepository boards, IColumnRepository columns,
-                               IRecordRepository records)
+        public BoardController(IUserRepository users, IBoardRepository boards,
+                               IColumnRepository columns, IRecordRepository records)
         {
             _users = users;
             _boards = boards;
@@ -96,6 +95,18 @@ namespace ToDo.Controllers
                 ModelState.AddModelError("Name", "Missing name!");
             }
             return RedirectToAction("Board", new {id = board.Id});
+        }
+
+        [HttpPost]
+        [Authorize]
+        public RedirectToActionResult MoveRecord(MoveRecord model)
+        {
+            var newColumn = _columns.GetEntityById(model.NewColumnId);
+            var record = _records.GetEntityById(model.RecordId);
+            record.Column = newColumn;
+            record.ColumnId = model.NewColumnId;
+            _records.UpdateEntity(record);
+            return RedirectToAction("Board", new {id = model.BoardId});
         }
     }
 }

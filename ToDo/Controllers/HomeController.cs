@@ -26,7 +26,7 @@ namespace ToDo.Controllers
             {
                 return RedirectToAction("Boards", "Board");
             }
-            return View("StartPage");
+            return View();
         }
 
         public IActionResult Privacy()

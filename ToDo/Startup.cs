@@ -63,7 +63,7 @@ namespace ToDo
                              {
                                  endpoints.MapControllerRoute(
                                      name: "home",
-                                     pattern: "{controller=Home}/{action=Index}");
+                                     pattern: "{controller=Board}/{action=Boards}");
                                  endpoints.MapControllerRoute(
                                      name: "board",
                                      pattern: "Board/Board/{id}");

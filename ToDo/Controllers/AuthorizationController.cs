@@ -24,6 +24,10 @@ namespace ToDo.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Boards", "Board");
+            }
             return View();
         }
 
@@ -53,6 +57,10 @@ namespace ToDo.Controllers
         [HttpGet]
         public IActionResult SignUp()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Boards", "Board");
+            }
             return View();
         }
 

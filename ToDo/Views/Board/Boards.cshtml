@@ -13,7 +13,7 @@
         <div class="row">
             @foreach (var board in Model.Boards)
             {
-                <div class="container">
+                <div class="d-inline-flex p-2 board-container">
                     <a asp-controller="Board" asp-action="Board" asp-route-id="@board.Id">
                         @board.Name
                     </a>
