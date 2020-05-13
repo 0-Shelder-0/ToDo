@@ -1,7 +1,20 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function onDragStart(event) {
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData("text", event.target.getAttribute('id'));
+}
 
-// Write your JavaScript code.
-$(() => {
-    
-});
+function onDragOver(event) {
+    event.preventDefault();
+}
+
+function onDrop(event) {
+    let element = document.getElementById(event.dataTransfer.getData("text"));
+    let targetId = event.target.getAttribute('id');
+
+    if (element != null && targetId.match('record'))
+        event.target.parentElement.append(element);
+    else if (element != null && targetId.match('column'))
+        event.target.append(element);
+
+    event.stopPropagation();
+}

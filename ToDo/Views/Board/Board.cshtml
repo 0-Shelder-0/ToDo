@@ -1,4 +1,3 @@
-@using ToDo.Models.Board
 @using ToDo.Models.CreateEntity
 @model ToDo.Models.Board.BoardModel
 @{
@@ -15,29 +14,31 @@
     </div>
 
     <div class="">
-        <div class="row">
+        <div class="row main-container">
             @foreach (var column in Model.Columns)
             {
-                <div class="col-sm-3 column-margin">
-                    <h3 class="head-column text-center">@column.Name</h3>
+                <div id="@column.Id" class="col-sm-3 column-margin">
+                    <div class="column-col">
+                        <h3 draggable="false" class="flex-row head-column text-center">@column.Name</h3>
 
-                    <div class="column">
-                        @if (column.Records != null)
-                        {
-                            foreach (var record in column.Records)
+                        <div id="column-@column.Id" class="column" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
+                            @if (column.Records != null)
                             {
-                                <div class="record">
-                                    @record.Value
-                                    @* @{ Html.RenderPartial("_MoveRecordPartial", new MoveRecord {BoardId = Model.BoardId, RecordId = record.Id}); } *@
-                                </div>
+                                foreach (var record in column.Records)
+                                {
+                                    <div id="record-@record.Id" class="record" draggable='true' ondragstart='onDragStart(event);'>
+                                        @record.Value
+                                    </div>
+                                }
                             }
-                        }
+                        </div>
+
                         @{ Html.RenderPartial("_CreateRecordPartial", new CreateRecordModel {ColumnId = column.Id, BoardId = Model.BoardId}); }
                     </div>
                 </div>
             }
 
-            <div class="col-sm-3">
+            <div class="col-sm-3 column-margin">
                 @{ Html.RenderPartial("_CreateColumnPartial", new CreateColumnModel {BoardId = Model.BoardId}); }
             </div>
 
@@ -46,7 +47,7 @@
 </head>
 <body>
 <div>
-
+    <script src="js/site.js"></script>
 </div>
 </body>
 </html>

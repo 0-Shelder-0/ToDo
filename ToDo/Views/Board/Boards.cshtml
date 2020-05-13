@@ -9,18 +9,21 @@
 <html>
 <head>
 
-    <div class="container">
+    <div class="container main-container">
         <div class="row">
             @foreach (var board in Model.Boards)
             {
-                <div class="d-inline-flex p-2 board-container">
+                <div class="col-sm-3 board">
                     <a asp-controller="Board" asp-action="Board" asp-route-id="@board.Id">
-                        @board.Name
+                        <div class="board-container text-center">
+                            @board.Name
+                        </div>
                     </a>
                 </div>
             }
-
-            @{ Html.RenderPartial("_CreateBoardPartial", new CreateBoardModel()); }
+            <div class="col-sm-3">
+                @{ Html.RenderPartial("_CreateBoardPartial", new CreateBoardModel()); }
+            </div>
         </div>
     </div>
 
