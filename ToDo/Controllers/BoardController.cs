@@ -26,7 +26,7 @@ namespace ToDo.Controllers
         }
 
         [Authorize]
-        [Route("/Board/Board/{id:int}")]
+        [Route("/Board-{id:int}")]
         public IActionResult Board(int id)
         {
             var user = _users.GetUserByEmail(User.Identity.Name);
@@ -38,6 +38,7 @@ namespace ToDo.Controllers
         }
 
         [Authorize]
+        [Route("Boards")]
         public IActionResult Boards()
         {
             var user = _users.GetUserByEmail(User.Identity.Name);
@@ -102,11 +103,22 @@ namespace ToDo.Controllers
         [Authorize]
         public RedirectToActionResult MoveRecord(MoveRecord model)
         {
-            var newColumn = _columns.GetEntityById(model.NewColumnId);
             var record = _records.GetEntityById(model.RecordId);
+            var newColumn = _columns.GetEntityById(model.NewColumnId);
+            var column = record.Column;
+            var board = _boards.GetEntityById(model.BoardId);
+            var user = _users.GetEntityById(board.UserId);
+
+            // column.Records.Remove(record);
             record.Column = newColumn;
-            record.ColumnId = model.NewColumnId;
+            record.ColumnId = newColumn.Id;
+
             _records.UpdateEntity(record);
+            _columns.UpdateEntity(column);
+            _columns.UpdateEntity(newColumn);
+            _boards.UpdateEntity(board);
+            _users.UpdateEntity(user);
+
             return RedirectToAction("Board", new {id = model.BoardId});
         }
     }

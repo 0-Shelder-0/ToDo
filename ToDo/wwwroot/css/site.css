@@ -137,7 +137,10 @@ body {
     background-color: slategray;
     border-radius: 3px;
     padding: 5px 10px;
-    margin-bottom: 8px;
+}
+
+.record-padding {
+    padding-bottom: 8px;
 }
 
 ::selection {

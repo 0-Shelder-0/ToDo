@@ -63,12 +63,9 @@ namespace ToDo
                              {
                                  endpoints.MapControllerRoute(
                                      name: "home",
-                                     pattern: "{controller=Board}/{action=Boards}");
-                                 endpoints.MapControllerRoute(
-                                     name: "board",
-                                     pattern: "Board/Board/{id}");
+                                     pattern: "{controller=Home}/{action=Index}/{id?}");
                              });
-            app.UseStatusCodePagesWithRedirects("/Home/Error");
+            app.UseStatusCodePagesWithRedirects("/Error");
         }
     }
 }

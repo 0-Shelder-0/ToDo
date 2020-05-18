@@ -8,13 +8,19 @@ function onDragOver(event) {
 }
 
 function onDrop(event) {
-    let element = document.getElementById(event.dataTransfer.getData("text"));
-    let targetId = event.target.getAttribute('id');
+    let recordId = event.dataTransfer.getData("text").split('-')[1];
+    let columnId = event.target.getAttribute('id').split('-')[1];
+    let url = document.URL.split('/');
 
-    if (element != null && targetId.match('record'))
-        event.target.parentElement.append(element);
-    else if (element != null && targetId.match('column'))
-        event.target.append(element);
+    let data = {};
+    data.RecordId = recordId;
+    data.NewColumnId = columnId;
+    data.BoardId = url[url.length - 1];
 
-    event.stopPropagation();
+    
+    $.ajax({
+        type: "POST",
+        url: "Board/MoveRecord",
+        data: data,
+    });
 }

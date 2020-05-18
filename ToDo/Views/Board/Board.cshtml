@@ -8,46 +8,52 @@
 
 <html>
 <head>
-    <div class="text-center">
-        <h2>@Model.Name</h2>
-        <hr>
-    </div>
+</head>
+<body>
+<div class="text-center">
+    <h2>@Model.Name</h2>
+    <hr>
+</div>
 
-    <div class="">
-        <div class="row main-container">
-            @foreach (var column in Model.Columns)
-            {
-                <div id="@column.Id" class="col-sm-3 column-margin">
-                    <div class="column-col">
-                        <h3 draggable="false" class="flex-row head-column text-center">@column.Name</h3>
+<div class="">
+    <div class="row main-container">
+        @foreach (var column in Model.Columns)
+        {
+            <div id="@column.Id" class="col-sm-3 column-margin">
+                <div class="column-col">
+                    <h3 draggable="false" class="flex-row head-column text-center">@column.Name</h3>
 
-                        <div id="column-@column.Id" class="column" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
-                            @if (column.Records != null)
+                    <div id="column-@column.Id" class="column" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
+
+                        <div id="record-padding" class="record-padding">
+                        </div>
+                        @if (column.Records != null)
+                        {
+                            foreach (var record in column.Records)
                             {
-                                foreach (var record in column.Records)
-                                {
+                                <div id="record-padding" class="record-padding">
                                     <div id="record-@record.Id" class="record" draggable='true' ondragstart='onDragStart(event);'>
                                         @record.Value
                                     </div>
-                                }
+                                </div>
                             }
-                        </div>
-
-                        @{ Html.RenderPartial("_CreateRecordPartial", new CreateRecordModel {ColumnId = column.Id, BoardId = Model.BoardId}); }
+                        }
                     </div>
+
+                    @{ Html.RenderPartial("_CreateRecordPartial", new CreateRecordModel {ColumnId = column.Id, BoardId = Model.BoardId}); }
                 </div>
-            }
-
-            <div class="col-sm-3 column-margin">
-                @{ Html.RenderPartial("_CreateColumnPartial", new CreateColumnModel {BoardId = Model.BoardId}); }
             </div>
+        }
 
+        <div class="col-sm-3 column-margin">
+            @{ Html.RenderPartial("_CreateColumnPartial", new CreateColumnModel {BoardId = Model.BoardId}); }
         </div>
+
     </div>
-</head>
-<body>
+</div>
+
+</body>
 <div>
     <script src="js/site.js"></script>
 </div>
-</body>
 </html>
