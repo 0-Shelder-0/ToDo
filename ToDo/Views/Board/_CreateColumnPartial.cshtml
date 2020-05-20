@@ -1,13 +1,10 @@
 @model ToDo.Models.CreateEntity.CreateColumnModel
 
 <form method="post" asp-controller="Board" asp-action="CreateColumn">
-    <div class="form-group">
-        <label class="col-form-label">Name</label>
-        <input class="form-control" asp-for="ColumnName" value="">
+    <div class="form-group input-group">
+        <input class="form-control" asp-for="ColumnName" placeholder="Column name">
         <span class="invalid-feedback" asp-validation-for="ColumnName"></span>
         @Html.HiddenFor(x => x.BoardId)
-    </div>
-    <div class="container">
         <button class="btn btn-primary">+</button>
     </div>
 </form>

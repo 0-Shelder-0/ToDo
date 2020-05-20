@@ -26,14 +26,16 @@ namespace ToDo.Controllers
             {
                 return RedirectToAction("Boards", "Board");
             }
-            return View("StartPage");
+            return View();
         }
 
+        [Route("Privacy")]
         public IActionResult Privacy()
         {
             return View();
         }
 
+        [Route("Error")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

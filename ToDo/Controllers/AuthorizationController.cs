@@ -22,12 +22,18 @@ namespace ToDo.Controllers
         }
 
         [HttpGet]
+        [Route("Login")]
         public IActionResult Login()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Boards", "Board");
+            }
             return View();
         }
 
         [HttpPost]
+        [Route("Login")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
@@ -51,12 +57,18 @@ namespace ToDo.Controllers
         }
 
         [HttpGet]
+        [Route("SignUp")]
         public IActionResult SignUp()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Boards", "Board");
+            }
             return View();
         }
 
         [HttpPost]
+        [Route("SignUp")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUp(RegisterModel registerModel)
         {
@@ -85,6 +97,7 @@ namespace ToDo.Controllers
         }
 
         [Authorize]
+        [Route("Settings")]
         public IActionResult Settings()
         {
             return View();
@@ -92,10 +105,15 @@ namespace ToDo.Controllers
 
         [HttpPost]
         [Authorize]
+        [Route("ChangePassword")]
         [ValidateAntiForgeryToken]
         public IActionResult ChangePassword(ChangePasswordModel model)
         {
-            if (ModelState.IsValid)
+            if (model.CurrentPassword == null)
+            {
+                ModelState.AddModelError("CurrentPassword", "Please enter your password.");
+            }
+            else if (ModelState.IsValid)
             {
                 var user = _userRepository.GetUserByEmail(User.Identity.Name);
                 var saltyHash = new SaltyHash(user.Hash, user.Salt);
@@ -106,6 +124,7 @@ namespace ToDo.Controllers
                     user.Salt = newPassword.Salt;
                     _userRepository.UpdateEntity(user);
                     _userRepository.Save();
+                    ViewData.Add("Success", "Password change was successful!");
                 }
                 else
                 {

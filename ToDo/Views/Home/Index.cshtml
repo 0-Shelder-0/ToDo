@@ -1,11 +1,22 @@
-﻿@model ToDo.Models.CreateEntity.CreateBoardModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "StartPage";
 }
 
-<h3 class="mx-auto text-center">Boards</h3>
-<hr>
+<!DOCTYPE html>
 
-<div class="col-md-4">
-    
+<html>
+<head>
+</head>
+
+<body>
+<div class="container-fluid text-center mt-5">
+    <div class="mx-auto">
+        <h3>Start Planning Today!</h3>
+        <p>Sign up and try ToDo now.</p>
+        <a asp-controller="Authorization" asp-action="SignUp">
+            <button class="btn btn-primary">Sign Up</button>
+        </a>
+    </div>
 </div>
+</body>
+</html>

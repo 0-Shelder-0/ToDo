@@ -48,7 +48,7 @@ namespace ToDo
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
@@ -63,12 +63,9 @@ namespace ToDo
                              {
                                  endpoints.MapControllerRoute(
                                      name: "home",
-                                     pattern: "{controller=Home}/{action=Index}");
-                                 endpoints.MapControllerRoute(
-                                     name: "board",
-                                     pattern: "Board/Board/{id}");
+                                     pattern: "{controller=Home}/{action=Index}/{id?}");
                              });
-            app.UseStatusCodePagesWithRedirects("/Home/Error");
+            app.UseStatusCodePagesWithRedirects("/Error");
         }
     }
 }

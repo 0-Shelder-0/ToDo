@@ -13,6 +13,10 @@
     <h3 class="mx-auto text-center">Account Settings</h3>
     <hr>
 
+    <h3 class="text-center" style="color: forestgreen">
+        @Html.ViewData["Success"]
+    </h3>
+
     <div class="form-group">
         <label class="col-form-label">Email</label>
         <input class="form-control" value="@User.Identity.Name">

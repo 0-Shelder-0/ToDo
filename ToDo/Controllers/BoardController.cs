@@ -1,11 +1,12 @@
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using ToDo.Entities;
 using ToDo.Interfaces;
 using ToDo.Models.Board;
 using ToDo.Models.CreateEntity;
+using ToDo.Models.RemoveEntity;
 
 namespace ToDo.Controllers
 {
@@ -16,8 +17,8 @@ namespace ToDo.Controllers
         private readonly IColumnRepository _columns;
         private readonly IRecordRepository _records;
 
-        public BoardController(IUserRepository users, IBoardRepository boards, IColumnRepository columns,
-                               IRecordRepository records)
+        public BoardController(IUserRepository users, IBoardRepository boards,
+                               IColumnRepository columns, IRecordRepository records)
         {
             _users = users;
             _boards = boards;
@@ -26,7 +27,7 @@ namespace ToDo.Controllers
         }
 
         [Authorize]
-        [Route("/Board/Board/{id:int}")]
+        [Route("/Board-{id:int}")]
         public IActionResult Board(int id)
         {
             var user = _users.GetUserByEmail(User.Identity.Name);
@@ -38,6 +39,7 @@ namespace ToDo.Controllers
         }
 
         [Authorize]
+        [Route("Boards")]
         public IActionResult Boards()
         {
             var user = _users.GetUserByEmail(User.Identity.Name);
@@ -47,7 +49,7 @@ namespace ToDo.Controllers
 
         [HttpPost]
         [Authorize]
-        public RedirectToActionResult CreateBoard(CreateBoardModel model)
+        public IActionResult CreateBoard(CreateBoardModel model)
         {
             if (ModelState.IsValid)
             {
@@ -63,7 +65,7 @@ namespace ToDo.Controllers
 
         [HttpPost]
         [Authorize]
-        public RedirectToActionResult CreateColumn(CreateColumnModel model)
+        public IActionResult CreateColumn(CreateColumnModel model)
         {
             var board = _boards.GetEntityById(model.BoardId);
             if (ModelState.IsValid)
@@ -81,7 +83,7 @@ namespace ToDo.Controllers
 
         [HttpPost]
         [Authorize]
-        public RedirectToActionResult CreateRecord(CreateRecordModel model)
+        public IActionResult CreateRecord(CreateRecordModel model)
         {
             var board = _boards.GetEntityById(model.BoardId);
             if (ModelState.IsValid)
@@ -96,6 +98,32 @@ namespace ToDo.Controllers
                 ModelState.AddModelError("Name", "Missing name!");
             }
             return RedirectToAction("Board", new {id = board.Id});
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult MoveRecord(MoveRecordModel model)
+        {
+            var record = _records.GetEntityById(model.RecordId);
+            var column = _columns.GetEntityById(model.NewColumnId);
+            // var adjacentRecord = _records.GetEntityById(model.AdjacentRecordId);
+
+            record.Column = column;
+            record.ColumnId = column.Id;
+            _records.UpdateEntity(record);
+            _records.Save();
+
+            return RedirectToAction("Board", new BoardModel {BoardId = column.BoardId});
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult RemoveRecord(RemoveRecordModel model)
+        {
+            _records.DeleteEntity(model.RecordId);
+            _records.Save();
+            
+            return RedirectToAction("Board", new {id = model.BoardId});
         }
     }
 }

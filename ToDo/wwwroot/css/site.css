@@ -88,3 +88,59 @@ body {
 .footer-color {
     background: white;
 }
+
+.main-container {
+    padding-top: 25px;
+}
+
+.board-container {
+    background-color: #a4b3c1;
+    height: 130px;
+    margin-bottom: 25px;
+    border-radius: 5px;
+    padding: 10px;
+    flex: auto;
+}
+
+.column {
+    padding-top: 10px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.head-column {
+    margin-bottom: 0;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.column-col {
+    background-color: #a4b3c1;
+    padding-bottom: 15px;
+    border-radius: 8px;
+}
+
+.column-margin {
+    margin: 15px -5px;
+}
+
+.btn-create-record {
+    margin-bottom: 0;
+    padding-top: 10px;
+}
+
+.btn-create-margin {
+    margin-bottom: 0;
+}
+
+.record {
+    background-color: slategray;
+    border-radius: 3px;
+    padding: 5px 10px;
+    overflow: auto;
+    word-break: break-all;
+}
+
+.record-padding {
+    padding-bottom: 8px;
+}
