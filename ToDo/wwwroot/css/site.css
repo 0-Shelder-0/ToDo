@@ -137,16 +137,10 @@ body {
     background-color: slategray;
     border-radius: 3px;
     padding: 5px 10px;
+    overflow: auto;
+    word-break: break-all;
 }
 
 .record-padding {
     padding-bottom: 8px;
-}
-
-::selection {
-    background: transparent;
-}
-
-::-moz-selection {
-    background: transparent;
 }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -7,6 +6,7 @@ using ToDo.Entities;
 using ToDo.Interfaces;
 using ToDo.Models.Board;
 using ToDo.Models.CreateEntity;
+using ToDo.Models.RemoveEntity;
 
 namespace ToDo.Controllers
 {
@@ -102,18 +102,28 @@ namespace ToDo.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult MoveRecord(MoveRecord model)
+        public IActionResult MoveRecord(MoveRecordModel model)
         {
             var record = _records.GetEntityById(model.RecordId);
-            var adjacentRecord = _records.GetEntityById(model.AdjacentRecordId);
             var column = _columns.GetEntityById(model.NewColumnId);
+            // var adjacentRecord = _records.GetEntityById(model.AdjacentRecordId);
 
             record.Column = column;
             record.ColumnId = column.Id;
             _records.UpdateEntity(record);
             _records.Save();
 
-            return Redirect(Request.GetDisplayUrl());
+            return RedirectToAction("Board", new BoardModel {BoardId = column.BoardId});
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult RemoveRecord(RemoveRecordModel model)
+        {
+            _records.DeleteEntity(model.RecordId);
+            _records.Save();
+            
+            return RedirectToAction("Board", new {id = model.BoardId});
         }
     }
 }
