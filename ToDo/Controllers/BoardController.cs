@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using ToDo.Entities;
 using ToDo.Interfaces;
@@ -48,7 +49,7 @@ namespace ToDo.Controllers
 
         [HttpPost]
         [Authorize]
-        public RedirectToActionResult CreateBoard(CreateBoardModel model)
+        public IActionResult CreateBoard(CreateBoardModel model)
         {
             if (ModelState.IsValid)
             {
@@ -64,7 +65,7 @@ namespace ToDo.Controllers
 
         [HttpPost]
         [Authorize]
-        public RedirectToActionResult CreateColumn(CreateColumnModel model)
+        public IActionResult CreateColumn(CreateColumnModel model)
         {
             var board = _boards.GetEntityById(model.BoardId);
             if (ModelState.IsValid)
@@ -82,7 +83,7 @@ namespace ToDo.Controllers
 
         [HttpPost]
         [Authorize]
-        public RedirectToActionResult CreateRecord(CreateRecordModel model)
+        public IActionResult CreateRecord(CreateRecordModel model)
         {
             var board = _boards.GetEntityById(model.BoardId);
             if (ModelState.IsValid)
@@ -101,25 +102,18 @@ namespace ToDo.Controllers
 
         [HttpPost]
         [Authorize]
-        public RedirectToActionResult MoveRecord(MoveRecord model)
+        public IActionResult MoveRecord(MoveRecord model)
         {
             var record = _records.GetEntityById(model.RecordId);
-            var newColumn = _columns.GetEntityById(model.NewColumnId);
-            var column = record.Column;
-            var board = _boards.GetEntityById(model.BoardId);
-            var user = _users.GetEntityById(board.UserId);
+            var adjacentRecord = _records.GetEntityById(model.AdjacentRecordId);
+            var column = _columns.GetEntityById(model.NewColumnId);
 
-            // column.Records.Remove(record);
-            record.Column = newColumn;
-            record.ColumnId = newColumn.Id;
-
+            record.Column = column;
+            record.ColumnId = column.Id;
             _records.UpdateEntity(record);
-            _columns.UpdateEntity(column);
-            _columns.UpdateEntity(newColumn);
-            _boards.UpdateEntity(board);
-            _users.UpdateEntity(user);
+            _records.Save();
 
-            return RedirectToAction("Board", new {id = model.BoardId});
+            return Redirect(Request.GetDisplayUrl());
         }
     }
 }

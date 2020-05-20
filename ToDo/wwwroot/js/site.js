@@ -8,19 +8,44 @@ function onDragOver(event) {
 }
 
 function onDrop(event) {
-    let recordId = event.dataTransfer.getData("text").split('-')[1];
-    let columnId = event.target.getAttribute('id').split('-')[1];
-    let url = document.URL.split('/');
+    let el;
+    let targetId;
+    let recordId = event.dataTransfer.getData("text");
+
+    try {
+        targetId = getId(event.target.getAttribute('id'));
+        el = $(`#record-padding-${targetId}`);
+    } catch (e) {
+        el = $(event.target);
+    }
 
     let data = {};
-    data.RecordId = recordId;
-    data.NewColumnId = columnId;
-    data.BoardId = url[url.length - 1];
+    data.NewColumnId = getParentId(el);
+    data.RecordId = getId(recordId);
+    data.AdjacentRecordId = targetId;
 
-    
+    moveRecord(data).then(() => window.location.reload());
+}
+
+async function moveRecord(data) {
     $.ajax({
         type: "POST",
         url: "Board/MoveRecord",
-        data: data,
+        data: data
     });
+    await sleep(50);
+}
+
+async function sleep(msec) {
+    return new Promise(resolve => setTimeout(resolve, msec));
+}
+
+function getId(elem) {
+    let id = elem.split('-');
+    return id[id.length - 1];
+}
+
+function getParentId(elem) {
+    let id = elem.parent().attr('id');
+    return getId(id);
 }

@@ -19,19 +19,19 @@
     <div class="row main-container">
         @foreach (var column in Model.Columns)
         {
-            <div id="@column.Id" class="col-sm-3 column-margin">
+            <div class="col-sm-3 column-margin">
                 <div class="column-col">
                     <h3 draggable="false" class="flex-row head-column text-center">@column.Name</h3>
 
-                    <div id="column-@column.Id" class="column" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
+                    <div id="column-@column.Id" class="column">
 
-                        <div id="record-padding" class="record-padding">
+                        <div class="record-padding" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
                         </div>
                         @if (column.Records != null)
                         {
                             foreach (var record in column.Records)
                             {
-                                <div id="record-padding" class="record-padding">
+                                <div id="record-padding-@record.Id" class="record-padding" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
                                     <div id="record-@record.Id" class="record" draggable='true' ondragstart='onDragStart(event);'>
                                         @record.Value
                                     </div>
