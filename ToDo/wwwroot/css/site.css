@@ -98,7 +98,6 @@ body {
     height: 130px;
     margin-bottom: 25px;
     border-radius: 5px;
-    padding: 10px;
     flex: auto;
 }
 
@@ -110,8 +109,8 @@ body {
 
 .head-column {
     margin-bottom: 0;
-    padding-top: 8px;
-    padding-bottom: 8px;
+    padding: 8px 10px;
+    word-break: break-word;
 }
 
 .column-col {
@@ -138,9 +137,19 @@ body {
     border-radius: 3px;
     padding: 5px 10px;
     overflow: auto;
-    word-break: break-all;
+    word-break: break-word;
 }
 
 .record-padding {
     padding-bottom: 8px;
+}
+
+.area-create-record {
+    background-color: #fff0;
+    border: 1px solid #fff0;
+}
+
+.board-name {
+    margin-top: 15px;
+    margin-left: 15px;
 }

@@ -1,6 +1,7 @@
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using ToDo.Entities;
 using ToDo.Interfaces;
@@ -113,17 +114,39 @@ namespace ToDo.Controllers
             _records.UpdateEntity(record);
             _records.Save();
 
-            return RedirectToAction("Board", new BoardModel {BoardId = column.BoardId});
+            return RedirectToAction("Board", new {id = column.BoardId});
         }
 
         [HttpPost]
         [Authorize]
         public IActionResult RemoveRecord(RemoveRecordModel model)
         {
-            _records.DeleteEntity(model.RecordId);
-            _records.Save();
-            
-            return RedirectToAction("Board", new {id = model.BoardId});
+            return RemoveEntity(_records, model.RecordId, model.BoardId);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult RemoveColumn(RemoveColumnModel model)
+        {
+            return RemoveEntity(_columns, model.ColumnId, model.BoardId);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult RemoveBoard(int boardId)
+        {
+            _boards.DeleteEntity(boardId);
+            _boards.Save();
+
+            return RedirectToAction("Boards");
+        }
+
+        private IActionResult RemoveEntity<T>(IEntityRepository<T> repository, int id, int boardId)
+        {
+            repository.DeleteEntity(id);
+            repository.Save();
+
+            return RedirectToAction("Board", new {id = boardId});
         }
     }
 }

@@ -1,9 +1,7 @@
 @model ToDo.Models.RemoveEntity.RemoveRecordModel
 
-<div>
-    <form method="post" asp-controller="Board" asp-action="RemoveRecord">
-        @Html.HiddenFor(x => x.BoardId)
-        @Html.HiddenFor(x => x.RecordId)
-        <button class="btn btn-danger">-</button>
-    </form>
-</div>
+<form method="post" asp-controller="Board" asp-action="RemoveRecord">
+    @Html.HiddenFor(x => x.BoardId)
+    @Html.HiddenFor(x => x.RecordId)
+    <button class="btn btn-secondary">-</button>
+</form>

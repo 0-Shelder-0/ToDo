@@ -1,4 +1,5 @@
 @using ToDo.Models.CreateEntity
+@using ToDo.Models.RemoveEntity
 @model ToDo.Models.Board.AllBoardsModel
 @{
     ViewData["Title"] = "Boards";
@@ -15,8 +16,13 @@
             {
                 <div class="col-sm-3 board">
                     <a asp-controller="Board" asp-action="Board" asp-route-id="@board.Id">
-                        <div class="board-container text-center">
-                            @board.Name
+                        <div class="board-container text-center d-flex">
+                            <div class="flex-grow-1 board-name">
+                                @board.Name
+                            </div>
+
+                            @{ Html.RenderPartial("_RemoveBoardPartial", new RemoveBoardModel {BoardId = board.Id}); }
+
                         </div>
                     </a>
                 </div>
@@ -33,4 +39,5 @@
 
 </div>
 </body>
+<script src="~/js/plugin-autoresize.js"></script>
 </html>

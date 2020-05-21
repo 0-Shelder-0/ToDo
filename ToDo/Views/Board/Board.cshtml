@@ -22,10 +22,13 @@
         {
             <div class="col-sm-3 column-margin">
                 <div class="column-col">
-                    <h3 draggable="false" class="flex-row head-column text-center">@column.Name</h3>
+
+                    <div class="d-flex">
+                        <h3 draggable="false" class="flex-row flex-grow-1 head-column text-center">@column.Name</h3>
+                        @{ Html.RenderPartial("_RemoveColumnPartial", new RemoveColumnModel {BoardId = Model.BoardId, ColumnId = column.Id}); }
+                    </div>
 
                     <div id="column-@column.Id" class="column">
-
                         <div class="record-padding" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
                         </div>
                         @if (column.Records != null)
@@ -36,7 +39,9 @@
                                     <div id="record-@record.Id" class="record flex-grow-1" draggable='true' ondragstart='onDragStart(event);'>
                                         @record.Value
                                     </div>
-                                    @{ Html.RenderPartial("_RemoveRecordPartial", new RemoveRecordModel {BoardId = Model.BoardId, RecordId = record.Id}); }
+                                    <div class="" style="border-radius: 5px">
+                                        @{ Html.RenderPartial("_RemoveRecordPartial", new RemoveRecordModel {BoardId = Model.BoardId, RecordId = record.Id}); }
+                                    </div>
                                 </div>
                             }
                         }
@@ -56,6 +61,7 @@
 
 </body>
 <div>
-    <script src="~/js/site.js"></script>
+    <script src="~/js/drag-and-drop.js"></script>
+    <script src="~/js/plugin-autoresize.js"></script>
 </div>
 </html>

@@ -3,7 +3,7 @@
 <div class="btn-create-record">
     <form method="post" asp-controller="Board" asp-action="CreateRecord">
         <div class="form-group input-group btn-create-margin">
-            <textarea class="input-group-prepend form-control" asp-for="Value" placeholder="Record">
+            <textarea class="input-group-prepend form-control area-create-record" asp-for="Value" placeholder="Record">
             </textarea>
             <span class="invalid-feedback" asp-validation-for="Value"></span>
             @Html.HiddenFor(x => x.BoardId)
