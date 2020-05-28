@@ -11,7 +11,7 @@
 <head>
 </head>
 <body>
-<div class="text-center">
+<div class="text-center unselectable">
     <h2>@Model.Name</h2>
     <hr>
 </div>
@@ -24,19 +24,19 @@
                 <div class="column-col">
 
                     <div class="d-flex">
-                        <h3 draggable="false" class="flex-row flex-grow-1 head-column text-center">@column.Name</h3>
+                        <h3 draggable="false" class="flex-row flex-grow-1 head-column text-center unselectable">@column.Name</h3>
                         @{ Html.RenderPartial("_RemoveColumnPartial", new RemoveColumnModel {BoardId = Model.BoardId, ColumnId = column.Id}); }
                     </div>
 
                     <div id="column-@column.Id" class="column">
-                        <div class="record-padding" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
+                        <div class="record-padding" style="padding-top: 12px" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
                         </div>
                         @if (column.Records != null)
                         {
                             foreach (var record in column.Records)
                             {
                                 <div id="record-padding-@record.Id" class="record-padding d-flex" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
-                                    <div id="record-@record.Id" class="record flex-grow-1" draggable='true' ondragstart='onDragStart(event);'>
+                                    <div id="record-@record.Id" class="record flex-grow-1 unselectable" draggable='true' ondragstart='onDragStart(event);'>
                                         @record.Value
                                     </div>
                                     <div class="" style="border-radius: 5px">

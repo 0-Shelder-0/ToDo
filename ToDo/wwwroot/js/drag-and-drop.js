@@ -1,6 +1,8 @@
-﻿function onDragStart(event) {
+﻿let recordId;
+
+function onDragStart(event) {
     event.dataTransfer.effectAllowed = 'move';
-    event.dataTransfer.setData("text", event.target.getAttribute('id'));
+    recordId = event.target.getAttribute('id');
 }
 
 function onDragOver(event) {
@@ -8,23 +10,21 @@ function onDragOver(event) {
 }
 
 function onDrop(event) {
-    let el;
-    let targetId;
-    let recordId = event.dataTransfer.getData("text");
+    let elem;
 
     try {
-        targetId = getId(event.target.getAttribute('id'));
-        el = $(`#record-padding-${targetId}`);
+        let targetId = getId(event.target.getAttribute('id'));
+        elem = $(`#record-padding-${targetId}`);
     } catch (e) {
-        el = $(event.target);
+        elem = $(event.target);
     }
 
     let data = {};
-    data.NewColumnId = getParentId(el);
+    data.NewColumnId = getParentId(elem);
     data.RecordId = getId(recordId);
-    data.AdjacentRecordId = targetId;
 
     moveRecord(data).then(() => window.location.reload());
+    recordId = null;
 }
 
 async function moveRecord(data) {

@@ -10,6 +10,6 @@ namespace ToDo.Entities
         public int BoardId { get; set; }
         public virtual Board Board { get; set; }
 
-        public virtual LinkedList<Record> Records { get; set; }
+        public virtual List<Record> Records { get; set; }
     }
 }

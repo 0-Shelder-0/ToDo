@@ -47,7 +47,7 @@ namespace ToDo.Data
             _dbContext.SaveChanges();
         }
 
-        public LinkedList<Record> GetRecords(int columnId)
+        public List<Record> GetRecords(int columnId)
         {
             return _dbContext.Columns.Find(columnId).Records;
         }
