@@ -1,6 +1,4 @@
-using System;
-
-namespace ToDo.Models
+namespace ToDo.Models.Errors
 {
     public class ErrorViewModel
     {
