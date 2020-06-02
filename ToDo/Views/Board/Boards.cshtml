@@ -21,14 +21,14 @@
                                 @board.Name
                             </div>
 
-                            @{ Html.RenderPartial("_RemoveBoardPartial", new RemoveBoardModel {BoardId = board.Id}); }
+                            @{ await Html.RenderPartialAsync("_RemoveBoardPartial", new RemoveBoardModel {BoardId = board.Id}); }
 
                         </div>
                     </a>
                 </div>
             }
             <div class="col-sm-3">
-                @{ Html.RenderPartial("_CreateBoardPartial", new CreateBoardModel()); }
+                @{ await Html.RenderPartialAsync("_CreateBoardPartial", new CreateBoardModel()); }
             </div>
         </div>
     </div>

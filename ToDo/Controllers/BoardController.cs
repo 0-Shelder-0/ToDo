@@ -1,5 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using ToDo.Entities;
 using ToDo.Interfaces;
@@ -15,14 +20,16 @@ namespace ToDo.Controllers
         private readonly IBoardRepository _boards;
         private readonly IColumnRepository _columns;
         private readonly IRecordRepository _records;
+        private readonly IImages _images;
 
-        public BoardController(IUserRepository users, IBoardRepository boards,
-                               IColumnRepository columns, IRecordRepository records)
+        public BoardController(IUserRepository users, IBoardRepository boards, IColumnRepository columns,
+                               IRecordRepository records, IImages images)
         {
             _users = users;
             _boards = boards;
             _columns = columns;
             _records = records;
+            _images = images;
         }
 
         [Authorize]
@@ -33,7 +40,9 @@ namespace ToDo.Controllers
             var board = user.Boards.FirstOrDefault(b => b.Id == id);
             if (board == null)
                 return RedirectToAction("Boards");
-            var model = new BoardModel {BoardId = board.Id, Name = board.Name, Columns = board.Columns};
+            
+            var url = $"{Request.Scheme}://{Request.Host}/{_images.ImagesPaths[board.BackgroundNumber]}";
+            var model = new BoardModel {BoardId = board.Id, Name = board.Name, Columns = board.Columns, BackgroundPath = url};
             return View(model);
         }
 

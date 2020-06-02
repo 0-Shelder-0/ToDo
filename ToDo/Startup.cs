@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ToDo.Data;
 using ToDo.Interfaces;
+using ToDo.Services;
 
 namespace ToDo
 {
@@ -36,6 +37,7 @@ namespace ToDo
             services.AddTransient<IBoardRepository, BoardRepository>();
             services.AddTransient<IColumnRepository, ColumnRepository>();
             services.AddTransient<IRecordRepository, RecordRepository>();
+            services.AddSingleton<IImages, ImageService>();
             services.AddRazorPages();
         }
 
