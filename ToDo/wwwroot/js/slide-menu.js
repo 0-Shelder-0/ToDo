@@ -1,7 +1,7 @@
 $(function () {
     $('.panel').tabSlideOut({
         tabHandle: '.handle',                       //КЛАСС КНОПКИ
-        pathToTabImage: 'button2.png',               //ПУТЬ К ИЗОБРАЖЕНИЮ КНОПКИ
+        pathToTabImage: 'button1.png',               //ПУТЬ К ИЗОБРАЖЕНИЮ КНОПКИ
         imageHeight: '50px',                        //ВЫСОТА КНОПКИ
         imageWidth: '50px',                         //ШИРИНА КНОПКИ
         tabLocation: 'right',                       //РАСПОЛОЖЕНИЕ ПАНЕЛИ TOP - ВЫДВИГАЕТСЯ СВЕРХУ, RIGHT - ВЫДВИГАЕТСЯ СПРАВА, BOTTOM - ВЫДВИГАЕТСЯ СНИЗУ, LEFT - ВЫДВИГАЕТСЯ СЛЕВА

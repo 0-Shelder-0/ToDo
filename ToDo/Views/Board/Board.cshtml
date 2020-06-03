@@ -58,22 +58,33 @@
             @{ await Html.RenderPartialAsync("_CreateColumnPartial", new CreateColumnModel {BoardId = Model.BoardId}); }
         </div>
 
-        <div class="panel">
-            <a class="handle" href="#"></a>
-            <h3>
-                <span class="text-center"> Menu </span>
-            </h3>
-            <hr>
-
-            <span class="row">
-                @foreach (var path in Model.ThumbnailPaths)
-                {
-                    await Html.RenderPartialAsync("_ChangeBackgroundPartial", new ChangeBackgroundModel {BoardId = Model.BoardId, NewBackgroundPath = path});
-                }
-            </span>
-        </div>
-
     </div>
+</div>
+
+<div class="panel">
+    <a class="handle unselectable" href="#"></a>
+    <h3 class="text-center">
+        Menu
+    </h3>
+    <hr>
+
+    <span class="row">
+        <div class="panel-heading">
+            <h4 class="text-center col">Colors</h4>
+        </div>
+        @foreach (var url in Model.ThumbnailPaths.Where(path => path.Contains("png")))
+        {
+            await Html.RenderPartialAsync("_ChangeBackgroundPartial", new ChangeBackgroundModel {BoardId = Model.BoardId, NewBackgroundPath = url});
+        }
+
+        <div class="panel-heading">
+            <h4 class="text-center">Images</h4>
+        </div>
+        @foreach (var url in Model.ThumbnailPaths.Where(path => path.Contains("jpg")))
+        {
+            await Html.RenderPartialAsync("_ChangeBackgroundPartial", new ChangeBackgroundModel {BoardId = Model.BoardId, NewBackgroundPath = url});
+        }
+    </span>
 </div>
 
 </body>

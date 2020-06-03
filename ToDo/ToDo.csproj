@@ -66,6 +66,30 @@
       <None Update="wwwroot\images\9.min.jpg">
         <DependentUpon>9.jpg</DependentUpon>
       </None>
+      <None Update="wwwroot\images\aqua.min.png">
+        <DependentUpon>aqua.png</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\blue.min.png">
+        <DependentUpon>blue.png</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\gray.min.png">
+        <DependentUpon>gray.png</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\green.min.png">
+        <DependentUpon>green.png</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\mediumpurple.min.png">
+        <DependentUpon>mediumpurple.png</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\red.min.png">
+        <DependentUpon>red.png</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\white.min.png">
+        <DependentUpon>white.png</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\yellow.min.png">
+        <DependentUpon>yellow.png</DependentUpon>
+      </None>
     </ItemGroup>
 
 </Project>

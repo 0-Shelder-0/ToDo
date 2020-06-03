@@ -58,7 +58,15 @@ namespace ToDo.Controllers
         public IActionResult Boards()
         {
             var user = _users.GetUserByEmail(User.Identity.Name);
-            var model = new AllBoardsModel {Boards = user.Boards};
+            var model = new AllBoardsModel
+            {
+                Boards = user.Boards.Select(board => new MiniBoard
+                {
+                    Name = board.Name,
+                    BoardId = board.Id,
+                    ThumbnailPath = _imageKeeper.ThumbnailImagePaths[board.BackgroundNumber]
+                })
+            };
             return View(model);
         }
 
