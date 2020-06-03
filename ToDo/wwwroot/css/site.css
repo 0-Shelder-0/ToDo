@@ -156,10 +156,33 @@ body {
 
 .unselectable {
     -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none;   /* Chrome/Safari/Opera */
-    -khtml-user-select: none;    /* Konqueror */
-    -moz-user-select: none;      /* Firefox */
-    -ms-user-select: none;       /* Internet Explorer/Edge */
-    user-select: none;           /* Non-prefixed version, currently
-                                  not supported by any browser */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
+                           not supported by any browser */
+}
+
+.panel {
+    padding: 20px;
+    width: 400px;
+    background: white;
+}
+
+.handle {
+    background-color: white;
+}
+
+.thumbnail {
+    height: 108px;
+    width: 48%;
+    border-radius: 5px;
+    margin: 3px;
+}
+
+.form-thumbnail {
+    height: 100%;
+    width: 100%;
 }

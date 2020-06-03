@@ -20,16 +20,16 @@ namespace ToDo.Controllers
         private readonly IBoardRepository _boards;
         private readonly IColumnRepository _columns;
         private readonly IRecordRepository _records;
-        private readonly IImages _images;
+        private readonly IImageKeeper _imageKeeper;
 
         public BoardController(IUserRepository users, IBoardRepository boards, IColumnRepository columns,
-                               IRecordRepository records, IImages images)
+                               IRecordRepository records, IImageKeeper imageKeeper)
         {
             _users = users;
             _boards = boards;
             _columns = columns;
             _records = records;
-            _images = images;
+            _imageKeeper = imageKeeper;
         }
 
         [Authorize]
@@ -40,9 +40,16 @@ namespace ToDo.Controllers
             var board = user.Boards.FirstOrDefault(b => b.Id == id);
             if (board == null)
                 return RedirectToAction("Boards");
-            
-            var url = $"{Request.Scheme}://{Request.Host}/{_images.ImagesPaths[board.BackgroundNumber]}";
-            var model = new BoardModel {BoardId = board.Id, Name = board.Name, Columns = board.Columns, BackgroundPath = url};
+
+            var domain = $"{Request.Scheme}://{Request.Host}/";
+            var model = new BoardModel
+            {
+                BoardId = board.Id,
+                Name = board.Name,
+                Columns = board.Columns,
+                BackgroundPath = domain + _imageKeeper.ImagePaths[board.BackgroundNumber],
+                ThumbnailPaths = _imageKeeper.ThumbnailImagePaths.Select(path => domain + path)
+            };
             return View(model);
         }
 
@@ -114,7 +121,6 @@ namespace ToDo.Controllers
         {
             var record = _records.GetEntityById(model.RecordId);
             var column = _columns.GetEntityById(model.NewColumnId);
-            // var adjacentRecord = _records.GetEntityById(model.AdjacentRecordId);
 
             record.Column = column;
             record.ColumnId = column.Id;
@@ -122,6 +128,28 @@ namespace ToDo.Controllers
             _records.Save();
 
             return RedirectToAction("Board", new {id = column.BoardId});
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult ChangeBackground(ChangeBackgroundModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var board = _boards.GetEntityById(model.BoardId);
+                var number = 0;
+                if (model.NewBackgroundPath != null)
+                {
+                    number = _imageKeeper.ThumbnailImagePaths
+                                         .FindIndex(path => path.Contains(model.NewBackgroundPath.Split('/').Last()));
+                }
+
+                board.BackgroundNumber = number;
+                _boards.UpdateEntity(board);
+                _boards.Save();
+            }
+
+            return RedirectToAction("Board", new {id = model.BoardId});
         }
 
         [HttpPost]

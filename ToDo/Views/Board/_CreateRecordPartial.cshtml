@@ -6,8 +6,8 @@
             <textarea class="input-group-prepend form-control area-create-record" asp-for="Value" placeholder="Record">
             </textarea>
             <span class="invalid-feedback" asp-validation-for="Value"></span>
-            @Html.HiddenFor(x => x.BoardId)
-            @Html.HiddenFor(x => x.ColumnId)
+            @Html.HiddenFor(model => model.BoardId)
+            @Html.HiddenFor(model => model.ColumnId)
         </div>
         <button class="btn btn-block" style="padding: 0">+</button>
     </form>

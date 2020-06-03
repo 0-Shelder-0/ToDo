@@ -37,7 +37,7 @@ namespace ToDo
             services.AddTransient<IBoardRepository, BoardRepository>();
             services.AddTransient<IColumnRepository, ColumnRepository>();
             services.AddTransient<IRecordRepository, RecordRepository>();
-            services.AddSingleton<IImages, ImageService>();
+            services.AddSingleton<IImageKeeper, ImageKeeperService>();
             services.AddRazorPages();
         }
 

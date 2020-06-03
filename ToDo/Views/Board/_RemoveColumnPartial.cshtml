@@ -1,7 +1,7 @@
 @model ToDo.Models.RemoveEntity.RemoveColumnModel
 
 <form method="post" asp-controller="Board" asp-action="RemoveColumn">
-    @Html.HiddenFor(x => x.BoardId)
-    @Html.HiddenFor(x => x.ColumnId)
+    @Html.HiddenFor(model => model.BoardId)
+    @Html.HiddenFor(model => model.ColumnId)
     <button class="btn btn-danger">-</button>
 </form>
