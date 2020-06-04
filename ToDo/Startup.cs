@@ -54,7 +54,13 @@ namespace ToDo
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = context =>
+                                    {
+                                        context.Context.Response.Headers.Add("Cache-Control", "public,max-age=1800");
+                                    }
+            });
 
             app.UseRouting();
 
