@@ -1,3 +1,4 @@
+@using ToDo.Models.Board
 @using ToDo.Models.CreateEntity
 @using ToDo.Models.RemoveEntity
 @model ToDo.Models.Board.BoardModel
@@ -10,10 +11,11 @@
 <html>
 <head>
 </head>
-<body>
-<div class="text-center">
+<body style="background-image: url(@Model.BackgroundPath); background-attachment: fixed">
+<div class="text-center unselectable">
     <h2>@Model.Name</h2>
     <hr>
+
 </div>
 
 <div class="">
@@ -22,40 +24,73 @@
         {
             <div class="col-sm-3 column-margin">
                 <div class="column-col">
-                    <h3 draggable="false" class="flex-row head-column text-center">@column.Name</h3>
+
+                    <div class="d-flex">
+                        <h3 draggable="false" class="flex-row flex-grow-1 head-column text-center unselectable">@column.Name</h3>
+                        @{ await Html.RenderPartialAsync("_RemoveColumnPartial", new RemoveColumnModel {BoardId = Model.BoardId, ColumnId = column.Id}); }
+                    </div>
 
                     <div id="column-@column.Id" class="column">
-
-                        <div class="record-padding" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
+                        <div class="record-padding" style="padding-top: 12px" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
                         </div>
                         @if (column.Records != null)
                         {
                             foreach (var record in column.Records)
                             {
                                 <div id="record-padding-@record.Id" class="record-padding d-flex" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
-                                    <div id="record-@record.Id" class="record flex-grow-1" draggable='true' ondragstart='onDragStart(event);'>
+                                    <div id="record-@record.Id" class="record flex-grow-1 unselectable" draggable='true' ondragstart='onDragStart(event);'>
                                         @record.Value
                                     </div>
-                                    @{ Html.RenderPartial("_RemoveRecordPartial", new RemoveRecordModel {BoardId = Model.BoardId, RecordId = record.Id}); }
+                                    <div class="" style="border-radius: 5px">
+                                        @{ await Html.RenderPartialAsync("_RemoveRecordPartial", new RemoveRecordModel {BoardId = Model.BoardId, RecordId = record.Id}); }
+                                    </div>
                                 </div>
                             }
                         }
                     </div>
 
-                    @{ Html.RenderPartial("_CreateRecordPartial", new CreateRecordModel {ColumnId = column.Id, BoardId = Model.BoardId}); }
+                    @{ await Html.RenderPartialAsync("_CreateRecordPartial", new CreateRecordModel {ColumnId = column.Id, BoardId = Model.BoardId}); }
                 </div>
             </div>
         }
 
         <div class="col-sm-3 column-margin">
-            @{ Html.RenderPartial("_CreateColumnPartial", new CreateColumnModel {BoardId = Model.BoardId}); }
+            @{ await Html.RenderPartialAsync("_CreateColumnPartial", new CreateColumnModel {BoardId = Model.BoardId}); }
         </div>
 
     </div>
 </div>
 
+<div class="panel">
+    <a class="handle unselectable" href="#"></a>
+    <h3 class="text-center">
+        Menu
+    </h3>
+    <hr>
+
+    <span class="row">
+        <div class="panel-heading">
+            <h4 class="text-center col">Colors</h4>
+        </div>
+        @foreach (var url in Model.ThumbnailPaths.Where(path => path.Contains("png")))
+        {
+            await Html.RenderPartialAsync("_ChangeBackgroundPartial", new ChangeBackgroundModel {BoardId = Model.BoardId, NewBackgroundPath = url});
+        }
+
+        <div class="panel-heading">
+            <h4 class="text-center">Images</h4>
+        </div>
+        @foreach (var url in Model.ThumbnailPaths.Where(path => path.Contains("jpg")))
+        {
+            await Html.RenderPartialAsync("_ChangeBackgroundPartial", new ChangeBackgroundModel {BoardId = Model.BoardId, NewBackgroundPath = url});
+        }
+    </span>
+</div>
+
 </body>
 <div>
-    <script src="~/js/site.js"></script>
+    <script src="~/js/drag-and-drop.js"></script>
+    <script src="~/js/plugin-autoresize.js"></script>
+    <script src="~/js/slide-menu.js"></script>
 </div>
 </html>

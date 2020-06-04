@@ -1,10 +1,10 @@
 @model ToDo.Models.CreateEntity.CreateColumnModel
 
 <form method="post" asp-controller="Board" asp-action="CreateColumn">
-    <div class="form-group input-group">
-        <input class="form-control" asp-for="ColumnName" placeholder="Column name">
+    <div class="form-group input-group btn-create-margin">
+        <textarea class="input-group-prepend form-control" asp-for="ColumnName" placeholder="Column name"></textarea>
         <span class="invalid-feedback" asp-validation-for="ColumnName"></span>
-        @Html.HiddenFor(x => x.BoardId)
-        <button class="btn btn-primary">+</button>
+        @Html.HiddenFor(model => model.BoardId)
     </div>
+    <button class="btn btn-primary btn-block" style="padding: 0">+</button>
 </form>

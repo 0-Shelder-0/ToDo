@@ -6,6 +6,6 @@ namespace ToDo.Interfaces
 {
     public interface IColumnRepository : IDisposable, IEntityRepository<Column>
     {
-        LinkedList<Record> GetRecords(int columnId);
+        List<Record> GetRecords(int columnId);
     }
 }

@@ -8,6 +8,7 @@ using ToDo.Entities;
 using ToDo.Interfaces;
 using ToDo.Models;
 using ToDo.Models.Board;
+using ToDo.Models.Errors;
 
 namespace ToDo.Controllers
 {

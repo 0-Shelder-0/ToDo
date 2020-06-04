@@ -8,6 +8,8 @@ namespace ToDo.Models.Board
     {
         public int BoardId { get; set; }
         public string Name { get; set; }
+        public string BackgroundPath { get; set; }
+        public IEnumerable<string> ThumbnailPaths { get; set; }
         public IEnumerable<Column> Columns { get; set; }
     }
 }

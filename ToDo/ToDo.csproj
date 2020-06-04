@@ -22,6 +22,74 @@
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Areas\Identity\Pages\_ViewStart.cshtml" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation\dist\additional-methods.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation\dist\additional-methods.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation\dist\jquery.validate.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation\dist\jquery.validate.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation\LICENSE.md" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="wwwroot\images\1.min.jpg">
+        <DependentUpon>1.jpg</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\10.min.jpg">
+        <DependentUpon>10.jpg</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\11.min.jpg">
+        <DependentUpon>11.jpg</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\12.min.jpg">
+        <DependentUpon>12.jpg</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\2.min.jpg">
+        <DependentUpon>2.jpg</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\3.min.jpg">
+        <DependentUpon>3.jpg</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\4.min.jpg">
+        <DependentUpon>4.jpg</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\5.min.jpg">
+        <DependentUpon>5.jpg</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\6.min.jpg">
+        <DependentUpon>6.jpg</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\7.min.jpg">
+        <DependentUpon>7.jpg</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\8.min.jpg">
+        <DependentUpon>8.jpg</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\9.min.jpg">
+        <DependentUpon>9.jpg</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\aqua.min.png">
+        <DependentUpon>aqua.png</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\blue.min.png">
+        <DependentUpon>blue.png</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\gray.min.png">
+        <DependentUpon>gray.png</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\green.min.png">
+        <DependentUpon>green.png</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\mediumpurple.min.png">
+        <DependentUpon>mediumpurple.png</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\red.min.png">
+        <DependentUpon>red.png</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\white.min.png">
+        <DependentUpon>white.png</DependentUpon>
+      </None>
+      <None Update="wwwroot\images\yellow.min.png">
+        <DependentUpon>yellow.png</DependentUpon>
+      </None>
     </ItemGroup>
 
 </Project>

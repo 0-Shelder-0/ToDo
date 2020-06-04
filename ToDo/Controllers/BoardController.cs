@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -16,14 +20,16 @@ namespace ToDo.Controllers
         private readonly IBoardRepository _boards;
         private readonly IColumnRepository _columns;
         private readonly IRecordRepository _records;
+        private readonly IImageKeeper _imageKeeper;
 
-        public BoardController(IUserRepository users, IBoardRepository boards,
-                               IColumnRepository columns, IRecordRepository records)
+        public BoardController(IUserRepository users, IBoardRepository boards, IColumnRepository columns,
+                               IRecordRepository records, IImageKeeper imageKeeper)
         {
             _users = users;
             _boards = boards;
             _columns = columns;
             _records = records;
+            _imageKeeper = imageKeeper;
         }
 
         [Authorize]
@@ -34,7 +40,16 @@ namespace ToDo.Controllers
             var board = user.Boards.FirstOrDefault(b => b.Id == id);
             if (board == null)
                 return RedirectToAction("Boards");
-            var model = new BoardModel {BoardId = board.Id, Name = board.Name, Columns = board.Columns};
+
+            var domain = $"{Request.Scheme}://{Request.Host}/";
+            var model = new BoardModel
+            {
+                BoardId = board.Id,
+                Name = board.Name,
+                Columns = board.Columns,
+                BackgroundPath = domain + _imageKeeper.ImagePaths[board.BackgroundNumber],
+                ThumbnailPaths = _imageKeeper.ThumbnailImagePaths.Select(path => domain + path)
+            };
             return View(model);
         }
 
@@ -43,7 +58,15 @@ namespace ToDo.Controllers
         public IActionResult Boards()
         {
             var user = _users.GetUserByEmail(User.Identity.Name);
-            var model = new AllBoardsModel {Boards = user.Boards};
+            var model = new AllBoardsModel
+            {
+                Boards = user.Boards.Select(board => new MiniBoard
+                {
+                    Name = board.Name,
+                    BoardId = board.Id,
+                    ThumbnailPath = _imageKeeper.ThumbnailImagePaths[board.BackgroundNumber]
+                })
+            };
             return View(model);
         }
 
@@ -106,24 +129,67 @@ namespace ToDo.Controllers
         {
             var record = _records.GetEntityById(model.RecordId);
             var column = _columns.GetEntityById(model.NewColumnId);
-            // var adjacentRecord = _records.GetEntityById(model.AdjacentRecordId);
 
             record.Column = column;
             record.ColumnId = column.Id;
             _records.UpdateEntity(record);
             _records.Save();
 
-            return RedirectToAction("Board", new BoardModel {BoardId = column.BoardId});
+            return RedirectToAction("Board", new {id = column.BoardId});
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult ChangeBackground(ChangeBackgroundModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var board = _boards.GetEntityById(model.BoardId);
+                var number = 0;
+                if (model.NewBackgroundPath != null)
+                {
+                    number = _imageKeeper.ThumbnailImagePaths
+                                         .FindIndex(path => path.Contains(model.NewBackgroundPath.Split('/').Last()));
+                }
+
+                board.BackgroundNumber = number;
+                _boards.UpdateEntity(board);
+                _boards.Save();
+            }
+
+            return RedirectToAction("Board", new {id = model.BoardId});
         }
 
         [HttpPost]
         [Authorize]
         public IActionResult RemoveRecord(RemoveRecordModel model)
         {
-            _records.DeleteEntity(model.RecordId);
-            _records.Save();
-            
-            return RedirectToAction("Board", new {id = model.BoardId});
+            return RemoveEntity(_records, model.RecordId, model.BoardId);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult RemoveColumn(RemoveColumnModel model)
+        {
+            return RemoveEntity(_columns, model.ColumnId, model.BoardId);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult RemoveBoard(int boardId)
+        {
+            _boards.DeleteEntity(boardId);
+            _boards.Save();
+
+            return RedirectToAction("Boards");
+        }
+
+        private IActionResult RemoveEntity<T>(IEntityRepository<T> repository, int id, int boardId)
+        {
+            repository.DeleteEntity(id);
+            repository.Save();
+
+            return RedirectToAction("Board", new {id = boardId});
         }
     }
 }
