@@ -7,7 +7,6 @@ namespace ToDo.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable("Images");
             migrationBuilder.CreateTable(
                 name: "Images",
                 columns: table => new
