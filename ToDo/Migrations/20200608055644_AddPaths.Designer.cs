@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToDo.Data;
 
 namespace ToDo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200608055644_AddPaths")]
+    partial class AddPaths
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,9 +25,6 @@ namespace ToDo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("ImageId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -33,9 +32,6 @@ namespace ToDo.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ImageId")
-                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -67,6 +63,9 @@ namespace ToDo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int?>("BoardId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ImageType")
                         .HasColumnType("int");
 
@@ -76,12 +75,9 @@ namespace ToDo.Migrations
                     b.Property<string>("Path")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("ThumbnailId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ThumbnailId")
+                    b.HasIndex("BoardId")
                         .IsUnique();
 
                     b.ToTable("Images");
@@ -115,6 +111,9 @@ namespace ToDo.Migrations
                     b.Property<int?>("BoardId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ImageId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -124,6 +123,9 @@ namespace ToDo.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BoardId");
+
+                    b.HasIndex("ImageId")
+                        .IsUnique();
 
                     b.ToTable("Thumbnails");
                 });
@@ -150,10 +152,6 @@ namespace ToDo.Migrations
 
             modelBuilder.Entity("ToDo.Entities.Board", b =>
                 {
-                    b.HasOne("ToDo.Entities.Image", "Image")
-                        .WithOne("Board")
-                        .HasForeignKey("ToDo.Entities.Board", "ImageId");
-
                     b.HasOne("ToDo.Entities.User", "User")
                         .WithMany("Boards")
                         .HasForeignKey("UserId")
@@ -172,11 +170,9 @@ namespace ToDo.Migrations
 
             modelBuilder.Entity("ToDo.Entities.Image", b =>
                 {
-                    b.HasOne("ToDo.Entities.Thumbnail", "Thumbnail")
+                    b.HasOne("ToDo.Entities.Board", "Board")
                         .WithOne("Image")
-                        .HasForeignKey("ToDo.Entities.Image", "ThumbnailId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ToDo.Entities.Image", "BoardId");
                 });
 
             modelBuilder.Entity("ToDo.Entities.Record", b =>
@@ -193,6 +189,12 @@ namespace ToDo.Migrations
                     b.HasOne("ToDo.Entities.Board", "Board")
                         .WithMany("Thumbnails")
                         .HasForeignKey("BoardId");
+
+                    b.HasOne("ToDo.Entities.Image", "Image")
+                        .WithOne("Thumbnail")
+                        .HasForeignKey("ToDo.Entities.Thumbnail", "ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -1,8 +1,8 @@
 @model ToDo.Models.Board.ChangeBackgroundModel
 
-<div class="d-inline-flex p-2 thumbnail" style="background-image: url(@Model.NewBackgroundPath)">
+<div class="d-inline-flex p-2 thumbnail" style="background-image: url(@Model.ImagePath)">
     <form class="form-thumbnail" method="post" asp-controller="Board" asp-action="ChangeBackground" onclick="this.submit()">
         @Html.HiddenFor(model => model.BoardId)
-        @Html.HiddenFor(model => model.NewBackgroundPath)
+        @Html.HiddenFor(model => model.ImageId)
     </form>
 </div>

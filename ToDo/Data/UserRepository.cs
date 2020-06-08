@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ToDo.Entities;
@@ -19,16 +18,6 @@ namespace ToDo.Data
         public User GetUserByEmail(string email)
         {
             return _dbContext.Users.FirstOrDefault(user => user.Email == email);
-        }
-
-        public List<Board> GetBoards(int userId)
-        {
-            return _dbContext.Users.Find(userId).Boards;
-        }
-
-        public IEnumerable<User> GetEntities()
-        {
-            return _dbContext.Users.ToList();
         }
 
         public User GetEntityById(int userId)

@@ -17,5 +17,7 @@ namespace ToDo.Data
         public DbSet<Board> Boards { get; set; }
         public DbSet<Column> Columns { get; set; }
         public DbSet<Record> Records { get; set; }
+        public DbSet<Image> Images { get; set; }
+        public DbSet<Thumbnail> Thumbnails { get; set; }
     }
 }

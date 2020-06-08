@@ -6,18 +6,23 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="ImageLibrary" Version="3.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.1" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.3" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
         <PackageReference Include="SaltyHasher" Version="1.0.0" />
+        <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Migrations" />
+      <Folder Include="wwwroot\images" />
+      <Folder Include="wwwroot\thumbnails" />
     </ItemGroup>
 
     <ItemGroup>
@@ -30,66 +35,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="wwwroot\images\1.min.jpg">
-        <DependentUpon>1.jpg</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\10.min.jpg">
-        <DependentUpon>10.jpg</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\11.min.jpg">
-        <DependentUpon>11.jpg</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\12.min.jpg">
-        <DependentUpon>12.jpg</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\2.min.jpg">
-        <DependentUpon>2.jpg</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\3.min.jpg">
-        <DependentUpon>3.jpg</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\4.min.jpg">
-        <DependentUpon>4.jpg</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\5.min.jpg">
-        <DependentUpon>5.jpg</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\6.min.jpg">
-        <DependentUpon>6.jpg</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\7.min.jpg">
-        <DependentUpon>7.jpg</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\8.min.jpg">
-        <DependentUpon>8.jpg</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\9.min.jpg">
-        <DependentUpon>9.jpg</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\aqua.min.png">
-        <DependentUpon>aqua.png</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\blue.min.png">
-        <DependentUpon>blue.png</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\gray.min.png">
-        <DependentUpon>gray.png</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\green.min.png">
-        <DependentUpon>green.png</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\mediumpurple.min.png">
-        <DependentUpon>mediumpurple.png</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\red.min.png">
-        <DependentUpon>red.png</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\white.min.png">
+      <Content Update="wwwroot\images\white.min.png">
         <DependentUpon>white.png</DependentUpon>
-      </None>
-      <None Update="wwwroot\images\yellow.min.png">
-        <DependentUpon>yellow.png</DependentUpon>
-      </None>
+      </Content>
     </ItemGroup>
 
 </Project>

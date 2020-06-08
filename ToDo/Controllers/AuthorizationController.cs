@@ -80,7 +80,12 @@ namespace ToDo.Controllers
                     return View(registerModel);
                 }
                 var saltyHash = SaltyHash.Create(registerModel.Password);
-                var user = new User {Email = registerModel.Email, Hash = saltyHash.Hash, Salt = saltyHash.Salt};
+                var user = new User
+                {
+                    Email = registerModel.Email,
+                    Hash = saltyHash.Hash,
+                    Salt = saltyHash.Salt
+                };
                 _userRepository.InsertEntity(user);
                 _userRepository.Save();
                 await Authenticate(registerModel.Email);
@@ -140,7 +145,8 @@ namespace ToDo.Controllers
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
             };
-            var id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType,
+            var id = new ClaimsIdentity(claims, "ApplicationCookie",
+                                        ClaimsIdentity.DefaultNameClaimType,
                                         ClaimsIdentity.DefaultRoleClaimType);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }

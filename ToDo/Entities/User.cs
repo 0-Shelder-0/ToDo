@@ -9,6 +9,6 @@ namespace ToDo.Entities
         public string Hash { get; set; }
         public string Salt { get; set; }
 
-        public virtual List<Board> Boards { get; set; }
+        public virtual IEnumerable<Board> Boards { get; set; }
     }
 }

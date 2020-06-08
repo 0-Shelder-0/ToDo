@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ToDo.Entities;
 using ToDo.Interfaces;
@@ -14,11 +12,6 @@ namespace ToDo.Data
         public ColumnRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
-        }
-
-        public IEnumerable<Column> GetEntities()
-        {
-            return _dbContext.Columns.ToList();
         }
 
         public Column GetEntityById(int entityId)
@@ -45,11 +38,6 @@ namespace ToDo.Data
         public void Save()
         {
             _dbContext.SaveChanges();
-        }
-
-        public List<Record> GetRecords(int columnId)
-        {
-            return _dbContext.Columns.Find(columnId).Records;
         }
 
         private bool _disposed;

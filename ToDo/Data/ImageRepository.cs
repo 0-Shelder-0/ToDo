@@ -1,38 +1,45 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ToDo.Entities;
 using ToDo.Interfaces;
 
 namespace ToDo.Data
 {
-    public class RecordRepository : IRecordRepository
+    public class ImageRepository : IImageRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public RecordRepository(ApplicationDbContext dbContext)
+        public ImageRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public Record GetEntityById(int entityId)
+        public IEnumerable<Image> GetImages(ImageType type)
         {
-            return _dbContext.Records.Find(entityId);
+            return _dbContext.Images.Where(image => image.ImageType == type).ToList();
         }
 
-        public void InsertEntity(Record record)
+        public Image GetEntityById(int entityId)
         {
-            _dbContext.Records.Add(record);
+            return _dbContext.Images.Find(entityId);
         }
 
-        public void DeleteEntity(int recordId)
+        public void InsertEntity(Image image)
         {
-            var record = _dbContext.Records.Find(recordId);
-            _dbContext.Records.Remove(record);
+            _dbContext.Images.Add(image);
         }
 
-        public void UpdateEntity(Record record)
+        public void DeleteEntity(int imageId)
         {
-            _dbContext.Entry(record).State = EntityState.Modified;
+            var image = _dbContext.Images.Find(imageId);
+            _dbContext.Images.Remove(image);
+        }
+
+        public void UpdateEntity(Image image)
+        {
+            _dbContext.Entry(image).State = EntityState.Modified;
         }
 
         public void Save()

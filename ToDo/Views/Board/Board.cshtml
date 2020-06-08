@@ -1,3 +1,4 @@
+@using ToDo.Entities
 @using ToDo.Models.Board
 @using ToDo.Models.CreateEntity
 @using ToDo.Models.RemoveEntity
@@ -27,7 +28,12 @@
 
                     <div class="d-flex">
                         <h3 draggable="false" class="flex-row flex-grow-1 head-column text-center unselectable">@column.Name</h3>
-                        @{ await Html.RenderPartialAsync("_RemoveColumnPartial", new RemoveColumnModel {BoardId = Model.BoardId, ColumnId = column.Id}); }
+                        @{ await Html.RenderPartialAsync("_RemoveColumnPartial",
+                                                         new RemoveColumnModel
+                                                         {
+                                                             BoardId = Model.BoardId,
+                                                             ColumnId = column.Id
+                                                         }); }
                     </div>
 
                     <div id="column-@column.Id" class="column">
@@ -42,14 +48,24 @@
                                         @record.Value
                                     </div>
                                     <div class="" style="border-radius: 5px">
-                                        @{ await Html.RenderPartialAsync("_RemoveRecordPartial", new RemoveRecordModel {BoardId = Model.BoardId, RecordId = record.Id}); }
+                                        @{ await Html.RenderPartialAsync("_RemoveRecordPartial",
+                                                                         new RemoveRecordModel
+                                                                         {
+                                                                             BoardId = Model.BoardId,
+                                                                             RecordId = record.Id
+                                                                         }); }
                                     </div>
                                 </div>
                             }
                         }
                     </div>
 
-                    @{ await Html.RenderPartialAsync("_CreateRecordPartial", new CreateRecordModel {ColumnId = column.Id, BoardId = Model.BoardId}); }
+                    @{ await Html.RenderPartialAsync("_CreateRecordPartial",
+                                                     new CreateRecordModel
+                                                     {
+                                                         ColumnId = column.Id,
+                                                         BoardId = Model.BoardId
+                                                     }); }
                 </div>
             </div>
         }
@@ -70,27 +86,47 @@
 
     <span class="row">
         <div class="panel-heading">
-            <h4 class="text-center col">Colors</h4>
+            <h4 class="text-center">Colors</h4>
         </div>
-        @foreach (var url in Model.ThumbnailPaths.Where(path => path.Contains("png")))
+        @foreach (var color in Model.Colors)
         {
-            await Html.RenderPartialAsync("_ChangeBackgroundPartial", new ChangeBackgroundModel {BoardId = Model.BoardId, NewBackgroundPath = url});
+            await Html.RenderPartialAsync("_ChangeBackgroundPartial",
+                                          new ChangeBackgroundModel
+                                          {
+                                              BoardId = Model.BoardId,
+                                              ImageId = color.Thumbnail.Id,
+                                              ImagePath = color.Thumbnail.Path
+                                          });
         }
 
         <div class="panel-heading">
             <h4 class="text-center">Images</h4>
         </div>
-        @foreach (var url in Model.ThumbnailPaths.Where(path => path.Contains("jpg")))
+        @foreach (var image in Model.Images)
         {
-            await Html.RenderPartialAsync("_ChangeBackgroundPartial", new ChangeBackgroundModel {BoardId = Model.BoardId, NewBackgroundPath = url});
+            await Html.RenderPartialAsync("_ChangeBackgroundPartial",
+                                          new ChangeBackgroundModel
+                                          {
+                                              BoardId = Model.BoardId,
+                                              ImageId = image.Thumbnail.Id,
+                                              ImagePath = image.Thumbnail.Path
+                                          });
         }
+
+        @{ await Html.RenderPartialAsync("_CreateBackgroundPartial",
+                                         new CreateBackgroundModel
+                                         {
+                                             BoardId = Model.BoardId,
+                                             Type = ImageType.Image
+                                         }); }
+
     </span>
 </div>
 
 </body>
 <div>
-    <script src="~/js/drag-and-drop.js"></script>
-    <script src="~/js/plugin-autoresize.js"></script>
-    <script src="~/js/slide-menu.js"></script>
+    <script src="~/js/drag-and-drop.js" asp-append-version="true"></script>
+    <script src="~/js/plugin-autoresize.js" asp-append-version="true"></script>
+    <script src="~/js/slide-menu.js" asp-append-version="true"></script>
 </div>
 </html>
