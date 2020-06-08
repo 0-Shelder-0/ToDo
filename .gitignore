@@ -272,3 +272,5 @@ __pycache__/
 # Cake - Uncomment if you are using it
 # tools/
 >>>>>>> Stashed changes
+/ToDo/wwwroot/thumbnails/
+/ToDo/wwwroot/images/
