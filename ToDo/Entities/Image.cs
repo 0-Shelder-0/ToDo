@@ -7,9 +7,9 @@ namespace ToDo.Entities
         public string Name { get; set; }
         public string Path { get; set; }
 
+        public int ThumbnailId { get; set; }
         public virtual Thumbnail Thumbnail { get; set; }
 
-        public int? BoardId { get; set; }
         public virtual Board Board { get; set; }
     }
 }

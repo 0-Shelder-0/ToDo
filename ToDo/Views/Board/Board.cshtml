@@ -94,17 +94,10 @@
                                           new ChangeBackgroundModel
                                           {
                                               BoardId = Model.BoardId,
-                                              ImageId = color.Id,
-                                              ImagePath = color.Path
+                                              ImageId = color.Thumbnail.Id,
+                                              ImagePath = color.Thumbnail.Path
                                           });
         }
-
-        @{ await Html.RenderPartialAsync("_CreateBackgroundPartial",
-                                         new CreateBackgroundModel
-                                         {
-                                             BoardId = Model.BoardId,
-                                             Type = ImageType.Color
-                                         }); }
 
         <div class="panel-heading">
             <h4 class="text-center">Images</h4>
@@ -115,8 +108,8 @@
                                           new ChangeBackgroundModel
                                           {
                                               BoardId = Model.BoardId,
-                                              ImageId = image.Id,
-                                              ImagePath = image.Path
+                                              ImageId = image.Thumbnail.Id,
+                                              ImagePath = image.Thumbnail.Path
                                           });
         }
 

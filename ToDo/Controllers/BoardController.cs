@@ -17,13 +17,15 @@ namespace ToDo.Controllers
 {
     public class BoardController : Controller
     {
-        private const string StorageFolder = "images";
+        private const string ImageStorageFolder = "images";
+        private const string ThumbnailStorageFolder = "thumbnails";
 
         private readonly IUserRepository _users;
         private readonly IBoardRepository _boards;
         private readonly IColumnRepository _columns;
         private readonly IRecordRepository _records;
         private readonly IImageRepository _images;
+        private readonly IThumbnailRepository _thumbnails;
         private readonly IWebHostEnvironment _appEnvironment;
 
         public BoardController(IUserRepository users,
@@ -31,6 +33,7 @@ namespace ToDo.Controllers
                                IColumnRepository columns,
                                IRecordRepository records,
                                IImageRepository images,
+                               IThumbnailRepository thumbnails,
                                IWebHostEnvironment appEnvironment)
         {
             _users = users;
@@ -38,6 +41,7 @@ namespace ToDo.Controllers
             _columns = columns;
             _records = records;
             _images = images;
+            _thumbnails = thumbnails;
             _appEnvironment = appEnvironment;
         }
 
@@ -170,25 +174,41 @@ namespace ToDo.Controllers
         [Authorize]
         public async Task<IActionResult> CreateBackground(CreateBackgroundModel model)
         {
-            var path = $"{StorageFolder}/{model.File.FileName}";
-            await using (var fileStream = new FileStream($"{_appEnvironment.WebRootPath}/{path}", FileMode.Create))
+            var board = _boards.GetEntityById(model.BoardId);
+
+            var imagePath = $"{ImageStorageFolder}/{model.File.FileName}";
+            await using (var fileStream = new FileStream($"{_appEnvironment.WebRootPath}/{imagePath}", FileMode.Create))
             {
                 await model.File.CopyToAsync(fileStream);
             }
-            var th = model.File.Name;
-            await using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
-            {
-                await model.File.CopyToAsync(fileStream);
-                var cropScaling = new CropScaling(100, 100);
-                var sourceImage = new KalikoImage(model.File.OpenReadStream());
-                cropScaling.Scale(sourceImage).LoadImage(fileStream);
-            }
+
+            var sourceImage = new KalikoImage(model.File.OpenReadStream());
+            var thumbnailName = $"min.{model.File.FileName}";
+            var thumbnailPath = $"{ThumbnailStorageFolder}/{thumbnailName}";
+            var fitScaling = new FitScaling(192, 108);
+            var im = fitScaling.Scale(sourceImage);
+            im.SavePng($"{_appEnvironment.WebRootPath}/{thumbnailPath}");
 
             var image = new Image
             {
-                Name = model.File.Name,
-                ImageType = ImageType.Image
+                Name = model.File.FileName,
+                ImageType = model.Type,
+                Path = imagePath,
+                Board = board,
             };
+
+            var thumbnail = new Thumbnail
+            {
+                Name = thumbnailName,
+                Path = thumbnailPath,
+                Board = board,
+                Image = image
+            };
+
+            image.Thumbnail = thumbnail;
+            thumbnail.Image = image;
+            _images.InsertEntity(image);
+            _images.Save();
 
             return RedirectToAction("Board", new {id = model.BoardId});
         }

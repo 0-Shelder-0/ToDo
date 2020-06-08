@@ -7,8 +7,9 @@ namespace ToDo.Entities
         public int Id { get; set; }
         public string Name { get; set; }
 
+        public int? ImageId { get; set; }
         public virtual Image Image { get; set; }
-        
+
         public virtual IEnumerable<Thumbnail> Thumbnails { get; set; }
 
         public int UserId { get; set; }
