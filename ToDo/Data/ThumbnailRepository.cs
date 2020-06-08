@@ -5,34 +5,34 @@ using ToDo.Interfaces;
 
 namespace ToDo.Data
 {
-    public class RecordRepository : IRecordRepository
+    public class ThumbnailRepository : IThumbnailRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public RecordRepository(ApplicationDbContext dbContext)
+        public ThumbnailRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public Record GetEntityById(int entityId)
+        public Thumbnail GetEntityById(int entityId)
         {
-            return _dbContext.Records.Find(entityId);
+            return _dbContext.Thumbnails.Find(entityId);
         }
 
-        public void InsertEntity(Record record)
+        public void InsertEntity(Thumbnail thumbnail)
         {
-            _dbContext.Records.Add(record);
+            _dbContext.Thumbnails.Add(thumbnail);
         }
 
-        public void DeleteEntity(int recordId)
+        public void DeleteEntity(int thumbnailId)
         {
-            var record = _dbContext.Records.Find(recordId);
-            _dbContext.Records.Remove(record);
+            var thumbnail = _dbContext.Thumbnails.Find(thumbnailId);
+            _dbContext.Thumbnails.Remove(thumbnail);
         }
 
-        public void UpdateEntity(Record record)
+        public void UpdateEntity(Thumbnail thumbnail)
         {
-            _dbContext.Entry(record).State = EntityState.Modified;
+            _dbContext.Entry(thumbnail).State = EntityState.Modified;
         }
 
         public void Save()

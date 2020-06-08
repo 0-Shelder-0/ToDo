@@ -15,14 +15,15 @@
             @foreach (var board in Model.Boards)
             {
                 <div class="col-sm-3 board">
-                    <div class="board-thumbnail" style="background-image: url(@board.ThumbnailPath)">
-                        <a asp-controller="Board" asp-action="Board" asp-route-id="@board.BoardId">
-                            <div class="board-container text-center d-flex">
+                    <div class="default-background">
+                        <a asp-controller="Board" asp-action="Board" asp-route-id="@board.Id">
+                            <div class="board-container text-center d-flex board-thumbnail" style="background-image: url(@board.Image?.Thumbnail?.Path)">
                                 <div class="flex-grow-1 board-name unselectable">
                                     @board.Name
                                 </div>
 
-                                @{ await Html.RenderPartialAsync("_RemoveBoardPartial", new RemoveBoardModel {BoardId = board.BoardId}); }
+                                @{ await Html.RenderPartialAsync("_RemoveBoardPartial",
+                                                                 new RemoveBoardModel {BoardId = board.Id}); }
 
                             </div>
                         </a>

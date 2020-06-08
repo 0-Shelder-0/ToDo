@@ -1,0 +1,9 @@
+@model ToDo.Models.CreateEntity.CreateBackgroundModel
+
+<div class="d-inline-flex p-2 thumbnail">
+    <form class="form-thumbnail" asp-controller="Board" asp-action="CreateBackground" method="post" enctype="multipart/form-data">
+        @Html.HiddenFor(model => model.BoardId)
+        <input type="file" name="File"/><br>
+        <input type="submit" value="Загрузить"/>
+    </form>
+</div>

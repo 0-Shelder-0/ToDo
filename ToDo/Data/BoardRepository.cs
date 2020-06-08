@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ToDo.Entities;
 using ToDo.Interfaces;
@@ -16,19 +14,9 @@ namespace ToDo.Data
             _dbContext = dbContext;
         }
 
-        public List<Column> GetColumns(int boardId)
-        {
-            return _dbContext.Boards.Find(boardId).Columns;
-        }
-
         public Board GetEntityById(int boardId)
         {
             return _dbContext.Boards.Find(boardId);
-        }
-
-        public IEnumerable<Board> GetEntities()
-        {
-            return _dbContext.Boards.ToList();
         }
 
         public void InsertEntity(Board board)

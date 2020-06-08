@@ -190,12 +190,21 @@ body {
 }
 
 .panel-heading {
-    padding-right: 37%;
-    padding-left: 37%;
+    padding-right: 32%;
+    padding-left: 32%;
     padding-top: 10px;
 }
 
-.board-thumbnail{
+.board-thumbnail {
     background-size: cover;
     border-radius: 5px;
+}
+
+.bg-color {
+    background-color: #ffffff77 !important;
+}
+
+.default-background {
+    background-color: slategray;
+    border-radius: 5px
 }

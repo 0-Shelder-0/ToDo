@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ToDo.Data;
 using ToDo.Interfaces;
-using ToDo.Services;
 
 namespace ToDo
 {
@@ -24,21 +23,24 @@ namespace ToDo
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(
-                options => options
-                          .UseLazyLoadingProxies()
-                          .UseMySql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie(options => { options.LoginPath = new PathString("/Authorization/Login"); });
+
             services.AddControllersWithViews();
+            services.AddRazorPages()
+                    .AddRazorRuntimeCompilation();
+
+            services.AddDbContext<ApplicationDbContext>(options => options
+                                                                  .UseLazyLoadingProxies()
+                                                                  .UseMySql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IBoardRepository, BoardRepository>();
             services.AddTransient<IColumnRepository, ColumnRepository>();
             services.AddTransient<IRecordRepository, RecordRepository>();
-            services.AddSingleton<IImageKeeper, ImageKeeperService>();
-            services.AddRazorPages();
+            services.AddTransient<IImageRepository, ImageRepository>();
+            services.AddTransient<IThumbnailRepository, ThumbnailRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -56,10 +58,7 @@ namespace ToDo
             app.UseHttpsRedirection();
             app.UseStaticFiles(new StaticFileOptions
             {
-                OnPrepareResponse = context =>
-                                    {
-                                        context.Context.Response.Headers.Add("Cache-Control", "public,max-age=1800");
-                                    }
+                OnPrepareResponse = context => { context.Context.Response.Headers.Add("Cache-Control", "public,max-age=1800"); }
             });
 
             app.UseRouting();

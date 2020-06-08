@@ -1,13 +1,6 @@
 ﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ToDo.Data;
-using ToDo.Entities;
-using ToDo.Interfaces;
-using ToDo.Models;
-using ToDo.Models.Board;
 using ToDo.Models.Errors;
 
 namespace ToDo.Controllers
