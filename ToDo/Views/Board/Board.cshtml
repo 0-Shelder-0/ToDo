@@ -84,41 +84,47 @@
     </h3>
     <hr>
 
-    <span class="row">
-        <div class="panel-heading">
-            <h4 class="text-center">Colors</h4>
+    <span>
+        <div class="panel-heading text-center">
+            <h4>Colors</h4>
         </div>
-        @foreach (var color in Model.Colors)
-        {
-            await Html.RenderPartialAsync("_ChangeBackgroundPartial",
-                                          new ChangeBackgroundModel
-                                          {
-                                              BoardId = Model.BoardId,
-                                              ImageId = color.Thumbnail.Id,
-                                              ImagePath = color.Thumbnail.Path
-                                          });
-        }
 
-        <div class="panel-heading">
-            <h4 class="text-center">Images</h4>
+        <span class="row">
+            @foreach (var color in Model.Colors)
+            {
+                await Html.RenderPartialAsync("_ChangeBackgroundPartial",
+                                              new ChangeBackgroundModel
+                                              {
+                                                  BoardId = Model.BoardId,
+                                                  ImageId = color.Thumbnail.Id,
+                                                  ImagePath = color.Thumbnail.Path
+                                              });
+            }
+        </span>
+
+        <div class="panel-heading text-center">
+            <h4>Images</h4>
         </div>
-        @foreach (var image in Model.Images)
-        {
-            await Html.RenderPartialAsync("_ChangeBackgroundPartial",
-                                          new ChangeBackgroundModel
-                                          {
-                                              BoardId = Model.BoardId,
-                                              ImageId = image.Thumbnail.Id,
-                                              ImagePath = image.Thumbnail.Path
-                                          });
-        }
 
-        @{ await Html.RenderPartialAsync("_CreateBackgroundPartial",
-                                         new CreateBackgroundModel
-                                         {
-                                             BoardId = Model.BoardId,
-                                             Type = ImageType.Image
-                                         }); }
+        <span class="row">
+            @foreach (var image in Model.Images)
+            {
+                await Html.RenderPartialAsync("_ChangeBackgroundPartial",
+                                              new ChangeBackgroundModel
+                                              {
+                                                  BoardId = Model.BoardId,
+                                                  ImageId = image.Thumbnail.Id,
+                                                  ImagePath = image.Thumbnail.Path
+                                              });
+            }
+
+            @{ await Html.RenderPartialAsync("_CreateBackgroundPartial",
+                                             new CreateBackgroundModel
+                                             {
+                                                 BoardId = Model.BoardId,
+                                                 Type = ImageType.Image
+                                             }); }
+        </span>
 
     </span>
 </div>

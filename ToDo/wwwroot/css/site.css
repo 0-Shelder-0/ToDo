@@ -37,11 +37,11 @@ html {
 }
 
 .border-top {
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #0000;
 }
 
-.border-bottom {
-    border-bottom: 1px solid #e5e5e5;
+.header-border-bottom {
+    border-bottom: 1px solid #0000;
 }
 
 .box-shadow {

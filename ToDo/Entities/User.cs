@@ -10,5 +10,7 @@ namespace ToDo.Entities
         public string Salt { get; set; }
 
         public virtual IEnumerable<Board> Boards { get; set; }
+
+        public virtual IEnumerable<Thumbnail> Thumbnails { get; set; }
     }
 }

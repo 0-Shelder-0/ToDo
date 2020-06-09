@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ToDo.Entities;
 using ToDo.Interfaces;
@@ -14,11 +12,6 @@ namespace ToDo.Data
         public ImageRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
-        }
-
-        public IEnumerable<Image> GetImages(ImageType type)
-        {
-            return _dbContext.Images.Where(image => image.ImageType == type).ToList();
         }
 
         public Image GetEntityById(int entityId)

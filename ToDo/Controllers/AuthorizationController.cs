@@ -29,6 +29,7 @@ namespace ToDo.Controllers
             {
                 return RedirectToAction("Boards", "Board");
             }
+
             return View();
         }
 
@@ -45,6 +46,7 @@ namespace ToDo.Controllers
                     ModelState.AddModelError("Email", "User with this email does not exist.");
                     return View(loginModel);
                 }
+
                 var saltyHash = new SaltyHash(user.Hash, user.Salt);
                 if (saltyHash.Validate(loginModel.Password))
                 {
@@ -64,6 +66,7 @@ namespace ToDo.Controllers
             {
                 return RedirectToAction("Boards", "Board");
             }
+
             return View();
         }
 
@@ -79,6 +82,7 @@ namespace ToDo.Controllers
                     ModelState.AddModelError("Email", "A user with this email already exists.");
                     return View(registerModel);
                 }
+
                 var saltyHash = SaltyHash.Create(registerModel.Password);
                 var user = new User
                 {
@@ -86,11 +90,15 @@ namespace ToDo.Controllers
                     Hash = saltyHash.Hash,
                     Salt = saltyHash.Salt
                 };
+
                 _userRepository.InsertEntity(user);
                 _userRepository.Save();
+
                 await Authenticate(registerModel.Email);
+
                 return RedirectToAction("Index", "Home");
             }
+
             return View(registerModel);
         }
 
@@ -114,21 +122,19 @@ namespace ToDo.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ChangePassword(ChangePasswordModel model)
         {
-            if (model.CurrentPassword == null)
-            {
-                ModelState.AddModelError("CurrentPassword", "Please enter your password.");
-            }
-            else if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var user = _userRepository.GetUserByEmail(User.Identity.Name);
                 var saltyHash = new SaltyHash(user.Hash, user.Salt);
+
                 if (saltyHash.Validate(model.CurrentPassword))
                 {
                     var newPassword = SaltyHash.Create(model.NewPassword);
-                    user.Hash = newPassword.Hash;
-                    user.Salt = newPassword.Salt;
+                    (user.Hash, user.Salt) = (newPassword.Hash, newPassword.Salt);
+
                     _userRepository.UpdateEntity(user);
                     _userRepository.Save();
+
                     ViewData.Add("Success", "Password change was successful!");
                 }
                 else
@@ -136,6 +142,7 @@ namespace ToDo.Controllers
                     ModelState.AddModelError("CurrentPassword", "Please enter correct password.");
                 }
             }
+
             return View("Settings");
         }
 
@@ -148,6 +155,7 @@ namespace ToDo.Controllers
             var id = new ClaimsIdentity(claims, "ApplicationCookie",
                                         ClaimsIdentity.DefaultNameClaimType,
                                         ClaimsIdentity.DefaultRoleClaimType);
+
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
     }

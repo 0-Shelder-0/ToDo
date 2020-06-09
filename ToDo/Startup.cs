@@ -72,6 +72,7 @@ namespace ToDo
                                      name: "home",
                                      pattern: "{controller=Home}/{action=Index}/{id?}");
                              });
+
             app.UseStatusCodePagesWithRedirects("/Error");
         }
     }
