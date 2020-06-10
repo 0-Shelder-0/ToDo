@@ -26,8 +26,16 @@
             <div class="col-sm-3 column-margin">
                 <div class="column-col">
 
-                    <div class="d-flex">
-                        <h3 draggable="false" class="flex-row flex-grow-1 head-column text-center unselectable">@column.Name</h3>
+                    <div class="d-flex flex-row">
+                        @{ await Html.RenderPartialAsync("_ChangeColumnPartial",
+                                                         new ChangeEntityModel
+                                                         {
+                                                             EntityId = column.Id,
+                                                             BoardId = Model.BoardId,
+                                                             Value = column.Name
+                                                         }); }
+
+
                         @{ await Html.RenderPartialAsync("_RemoveColumnPartial",
                                                          new RemoveColumnModel
                                                          {
@@ -36,16 +44,24 @@
                                                          }); }
                     </div>
 
-                    <div id="column-@column.Id" class="column">
-                        <div class="record-padding" style="padding-top: 12px" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
+                    <div class="column" ondragover='onDragOver(event);' ondrop='onDrop(event, @column.Id);'>
+                        <div class="record-padding" style="padding-top: 15px">
                         </div>
                         @if (column.Records != null)
                         {
                             foreach (var record in column.Records)
                             {
-                                <div id="record-padding-@record.Id" class="record-padding d-flex" ondragover='onDragOver(event);' ondrop='onDrop(event);'>
-                                    <div id="record-@record.Id" class="record flex-grow-1 unselectable" draggable='true' ondragstart='onDragStart(event);'>
-                                        @record.Value
+                                <div class="record-padding d-flex">
+                                    <div class="record flex-grow-1" draggable='true' ondragstart='onDragStart(event, @record.Id);'>
+
+                                        @{ await Html.RenderPartialAsync("_ChangeRecordPartial",
+                                                                         new ChangeEntityModel
+                                                                         {
+                                                                             EntityId = record.Id,
+                                                                             BoardId = Model.BoardId,
+                                                                             Value = record.Value
+                                                                         }); }
+
                                     </div>
                                     <div class="" style="border-radius: 5px">
                                         @{ await Html.RenderPartialAsync("_RemoveRecordPartial",
@@ -84,41 +100,47 @@
     </h3>
     <hr>
 
-    <span class="row">
-        <div class="panel-heading">
-            <h4 class="text-center">Colors</h4>
+    <span>
+        <div class="panel-heading text-center">
+            <h4>Colors</h4>
         </div>
-        @foreach (var color in Model.Colors)
-        {
-            await Html.RenderPartialAsync("_ChangeBackgroundPartial",
-                                          new ChangeBackgroundModel
-                                          {
-                                              BoardId = Model.BoardId,
-                                              ImageId = color.Thumbnail.Id,
-                                              ImagePath = color.Thumbnail.Path
-                                          });
-        }
 
-        <div class="panel-heading">
-            <h4 class="text-center">Images</h4>
+        <span class="row">
+            @foreach (var color in Model.Colors)
+            {
+                await Html.RenderPartialAsync("_ChangeBackgroundPartial",
+                                              new ChangeBackgroundModel
+                                              {
+                                                  BoardId = Model.BoardId,
+                                                  ImageId = color.Thumbnail.Id,
+                                                  ImagePath = color.Thumbnail.Path
+                                              });
+            }
+        </span>
+
+        <div class="panel-heading text-center">
+            <h4>Images</h4>
         </div>
-        @foreach (var image in Model.Images)
-        {
-            await Html.RenderPartialAsync("_ChangeBackgroundPartial",
-                                          new ChangeBackgroundModel
-                                          {
-                                              BoardId = Model.BoardId,
-                                              ImageId = image.Thumbnail.Id,
-                                              ImagePath = image.Thumbnail.Path
-                                          });
-        }
 
-        @{ await Html.RenderPartialAsync("_CreateBackgroundPartial",
-                                         new CreateBackgroundModel
-                                         {
-                                             BoardId = Model.BoardId,
-                                             Type = ImageType.Image
-                                         }); }
+        <span class="row">
+            @foreach (var image in Model.Images)
+            {
+                await Html.RenderPartialAsync("_ChangeBackgroundPartial",
+                                              new ChangeBackgroundModel
+                                              {
+                                                  BoardId = Model.BoardId,
+                                                  ImageId = image.Thumbnail.Id,
+                                                  ImagePath = image.Thumbnail.Path
+                                              });
+            }
+
+            @{ await Html.RenderPartialAsync("_CreateBackgroundPartial",
+                                             new CreateBackgroundModel
+                                             {
+                                                 BoardId = Model.BoardId,
+                                                 Type = ImageType.Image
+                                             }); }
+        </span>
 
     </span>
 </div>

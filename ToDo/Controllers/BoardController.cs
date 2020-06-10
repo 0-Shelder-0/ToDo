@@ -51,29 +51,43 @@ namespace ToDo.Controllers
         {
             var user = _users.GetUserByEmail(User.Identity.Name);
             var board = user.Boards.FirstOrDefault(b => b.Id == id);
+
             if (board == null)
             {
                 return RedirectToAction("Boards");
             }
 
-            var model = new BoardModel
+            var boardModel = new BoardModel
             {
                 BoardId = board.Id,
                 Name = board.Name,
                 Columns = board.Columns,
                 BackgroundPath = board.Image?.Path,
-                Colors = GetImageModels(board, ImageType.Color),
-                Images = GetImageModels(board, ImageType.Image)
+                Colors = GetImages(user, ImageType.Color),
+                Images = GetImages(user, ImageType.Image)
             };
 
-            return View(model);
+            return View(boardModel);
         }
 
-        private IEnumerable<Image> GetImageModels(Board board, ImageType type)
+        private IEnumerable<Image> GetImages(User user, ImageType type)
         {
-            return board.Thumbnails
-                        .Select(thumbnail => thumbnail.Image)
-                        .Where(image => image.ImageType == type);
+            return GetDefaultImages()
+                  .Concat(GetUserImages(user))
+                  .Where(image => image.ImageType == type);
+        }
+
+        private IEnumerable<Image> GetDefaultImages()
+        {
+            return _thumbnails
+                  .GetThumbnails()
+                  .Where(thumbnail => thumbnail.User == null)
+                  .Select(thumbnail => thumbnail.Image);
+        }
+
+        private IEnumerable<Image> GetUserImages(User user)
+        {
+            return user.Thumbnails.Select(thumbnail => thumbnail.Image);
         }
 
         [Authorize]
@@ -95,12 +109,13 @@ namespace ToDo.Controllers
                 var user = _users.GetUserByEmail(User.Identity.Name);
                 var board = new Board
                 {
-                    Name = model.Name,
+                    Name = model.Name.Trim(),
                     User = user,
-                    UserId = user.Id
                 };
+
                 _boards.InsertEntity(board);
                 _boards.Save();
+
                 return RedirectToAction("Board", new {id = board.Id});
             }
             ModelState.AddModelError("Name", "Missing name!");
@@ -113,14 +128,17 @@ namespace ToDo.Controllers
         public IActionResult CreateColumn(CreateColumnModel model)
         {
             var board = _boards.GetEntityById(model.BoardId);
+            if (board == null)
+                return RedirectToAction("Boards");
+
             if (ModelState.IsValid)
             {
                 var column = new Column
                 {
-                    Name = model.ColumnName,
-                    BoardId = board.Id,
+                    Name = model.ColumnName.Trim(),
                     Board = board
                 };
+
                 _columns.InsertEntity(column);
                 _columns.Save();
             }
@@ -128,6 +146,7 @@ namespace ToDo.Controllers
             {
                 ModelState.AddModelError("Name", "Missing name!");
             }
+
             return RedirectToAction("Board", new {id = board.Id});
         }
 
@@ -136,15 +155,18 @@ namespace ToDo.Controllers
         public IActionResult CreateRecord(CreateRecordModel model)
         {
             var board = _boards.GetEntityById(model.BoardId);
+            if (board == null)
+                return RedirectToAction("Boards");
+
             if (ModelState.IsValid)
             {
                 var column = board.Columns.FirstOrDefault(col => col.Id == model.ColumnId);
                 var record = new Record
                 {
                     Column = column,
-                    ColumnId = column.Id,
-                    Value = model.Value
+                    Value = model.Value.Trim()
                 };
+
                 _records.InsertEntity(record);
                 _records.Save();
             }
@@ -152,6 +174,7 @@ namespace ToDo.Controllers
             {
                 ModelState.AddModelError("Name", "Missing name!");
             }
+
             return RedirectToAction("Board", new {id = board.Id});
         }
 
@@ -162,10 +185,13 @@ namespace ToDo.Controllers
             var record = _records.GetEntityById(model.RecordId);
             var column = _columns.GetEntityById(model.NewColumnId);
 
-            record.Column = column;
-            record.ColumnId = column.Id;
-            _records.UpdateEntity(record);
-            _records.Save();
+            if (record != null && column != null)
+            {
+                record.Column = column;
+
+                _records.UpdateEntity(record);
+                _records.Save();
+            }
 
             return RedirectToAction("Board", new {id = column.BoardId});
         }
@@ -175,61 +201,106 @@ namespace ToDo.Controllers
         public async Task<IActionResult> CreateBackground(CreateBackgroundModel model)
         {
             var board = _boards.GetEntityById(model.BoardId);
+            if (board == null)
+                return RedirectToAction("Boards");
 
             var imagePath = $"{ImageStorageFolder}/{model.File.FileName}";
-            await using (var fileStream = new FileStream($"{_appEnvironment.WebRootPath}/{imagePath}", FileMode.Create))
-            {
-                await model.File.CopyToAsync(fileStream);
-            }
+            await SaveImageAsync(model, imagePath);
 
-            var sourceImage = new KalikoImage(model.File.OpenReadStream());
             var thumbnailName = $"min.{model.File.FileName}";
             var thumbnailPath = $"{ThumbnailStorageFolder}/{thumbnailName}";
-            var fitScaling = new FitScaling(192, 108);
-            var im = fitScaling.Scale(sourceImage);
-            im.SavePng($"{_appEnvironment.WebRootPath}/{thumbnailPath}");
+            SaveThumbnail(model, thumbnailPath);
 
             var image = new Image
             {
                 Name = model.File.FileName,
                 ImageType = model.Type,
                 Path = imagePath,
-                Board = board,
+                Board = board
             };
-
             var thumbnail = new Thumbnail
             {
                 Name = thumbnailName,
                 Path = thumbnailPath,
-                Board = board,
+                User = board.User,
                 Image = image
             };
-
             image.Thumbnail = thumbnail;
-            thumbnail.Image = image;
+
             _images.InsertEntity(image);
             _images.Save();
 
             return RedirectToAction("Board", new {id = model.BoardId});
         }
 
+        private void SaveThumbnail(CreateBackgroundModel model, string thumbnailPath)
+        {
+            var sourceImage = new KalikoImage(model.File.OpenReadStream());
+            var fitScaling = new FitScaling(192, 108);
+            var image = fitScaling.Scale(sourceImage);
+
+            image.SavePng($"{_appEnvironment.WebRootPath}/{thumbnailPath}");
+        }
+
+        private async Task SaveImageAsync(CreateBackgroundModel model, string imagePath)
+        {
+            await using (var fileStream = new FileStream($"{_appEnvironment.WebRootPath}/{imagePath}", FileMode.Create))
+            {
+                await model.File.CopyToAsync(fileStream);
+            }
+        }
+
         [HttpPost]
         [Authorize]
         public IActionResult ChangeBackground(ChangeBackgroundModel model)
         {
-            if (ModelState.IsValid)
-            {
-                var board = _boards.GetEntityById(model.BoardId);
-                if (board == null)
-                    return RedirectToAction("Boards");
-                var background = _images.GetEntityById(model.ImageId);
+            var board = _boards.GetEntityById(model.BoardId);
+            var background = _images.GetEntityById(model.ImageId);
 
-                board.Image = background;
-                _boards.UpdateEntity(board);
-                _boards.Save();
-            }
+            if (board == null || background == null)
+                return RedirectToAction("Boards");
+
+            board.Image = background;
+
+            _boards.UpdateEntity(board);
+            _boards.Save();
 
             return RedirectToAction("Board", new {id = model.BoardId});
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult ChangeColumnName(ChangeEntityModel model)
+        {
+            return ChangeEntity(_columns, model.EntityId, model.Value, model.BoardId);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult ChangeRecordValue(ChangeEntityModel model)
+        {
+            return ChangeEntity(_records, model.EntityId, model.Value, model.BoardId);
+        }
+
+        private IActionResult ChangeEntity<T>(IEntityRepository<T> entities, int id, object value, int boardId)
+        {
+            if (ModelState.IsValid)
+            {
+                var entity = entities.GetEntityById(id);
+
+                if (entity != null)
+                {
+                    typeof(T)
+                       .GetProperties()
+                       .FirstOrDefault(info => info.Name == "Name" || info.Name == "Value")?
+                       .SetValue(entity, value);
+
+                    entities.UpdateEntity(entity);
+                    entities.Save();
+                }
+            }
+
+            return RedirectToAction("Board", new {id = boardId});
         }
 
         [HttpPost]

@@ -37,11 +37,11 @@ html {
 }
 
 .border-top {
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #0000;
 }
 
-.border-bottom {
-    border-bottom: 1px solid #e5e5e5;
+.header-border-bottom {
+    border-bottom: 1px solid #0000;
 }
 
 .box-shadow {
@@ -106,12 +106,6 @@ body {
     padding-right: 8px;
 }
 
-.head-column {
-    margin-bottom: 0;
-    padding: 8px 10px;
-    word-break: break-word;
-}
-
 .column-col {
     background-color: #a4b3c1;
     padding-bottom: 15px;
@@ -134,7 +128,6 @@ body {
 .record {
     background-color: slategray;
     border-radius: 3px;
-    padding: 5px 10px;
     overflow: auto;
     word-break: break-word;
 }
@@ -207,4 +200,32 @@ body {
 .default-background {
     background-color: slategray;
     border-radius: 5px
+}
+
+.column-header {
+    height: 54px;
+    width: 100%;
+    margin-bottom: 0;
+    padding: 8px 10px;
+    background-color: #a4b3c1;
+    border-color: #0000;
+    font-size: 1.5rem;
+    font-weight: 400;
+    border-radius: 8px;
+    resize: none;
+    word-break: break-word;
+}
+
+.record-textarea {
+    text-align: left !important;
+    height: 30px;
+    width: 100%;
+    background-color: slategray;
+    border-color: #0000;
+    border-radius: 5px;
+    resize: none;
+    word-break: break-word;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
 }

@@ -20,6 +20,7 @@ namespace ToDo.Controllers
             {
                 return RedirectToAction("Boards", "Board");
             }
+            
             return View();
         }
 

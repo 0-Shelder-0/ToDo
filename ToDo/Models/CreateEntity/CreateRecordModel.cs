@@ -6,8 +6,11 @@ namespace ToDo.Models.CreateEntity
     {
         [Required(ErrorMessage = "Missing name")]
         public string Value { get; set; }
-        
+
+        [Required]
         public int BoardId { get; set; }
+
+        [Required]
         public int ColumnId { get; set; }
     }
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ToDo.Entities;
 using ToDo.Interfaces;
@@ -12,6 +14,11 @@ namespace ToDo.Data
         public ThumbnailRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        public IEnumerable<Thumbnail> GetThumbnails()
+        {
+            return _dbContext.Thumbnails.ToList();
         }
 
         public Thumbnail GetEntityById(int entityId)

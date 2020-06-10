@@ -8,6 +8,6 @@ namespace ToDo.Entities
 
         public virtual Image Image { get; set; }
 
-        public virtual Board Board { get; set; }
+        public virtual User User { get; set; }
     }
 }
