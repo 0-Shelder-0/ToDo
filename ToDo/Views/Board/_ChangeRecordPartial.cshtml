@@ -1,0 +1,7 @@
+@model ToDo.Models.Board.ChangeEntityModel
+
+<form method="post" asp-controller="Board" asp-action="ChangeRecordValue">
+    <textarea spellcheck="false" draggable="false" class="text-center record-textarea" asp-for="Value"></textarea>
+    @Html.HiddenFor(model => model.EntityId)
+    @Html.HiddenFor(model => model.BoardId)
+</form>

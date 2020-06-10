@@ -2,7 +2,7 @@
 
 <form method="post" asp-controller="Board" asp-action="CreateColumn">
     <div class="form-group input-group btn-create-margin">
-        <textarea class="input-group-prepend form-control" asp-for="ColumnName" placeholder="Column name"></textarea>
+        <textarea spellcheck="false" class="input-group-prepend form-control" asp-for="ColumnName" placeholder="Column name"></textarea>
         <span class="invalid-feedback" asp-validation-for="ColumnName"></span>
         @Html.HiddenFor(model => model.BoardId)
     </div>

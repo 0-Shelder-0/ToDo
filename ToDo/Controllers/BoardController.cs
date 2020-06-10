@@ -109,7 +109,7 @@ namespace ToDo.Controllers
                 var user = _users.GetUserByEmail(User.Identity.Name);
                 var board = new Board
                 {
-                    Name = model.Name,
+                    Name = model.Name.Trim(),
                     User = user,
                 };
 
@@ -135,7 +135,7 @@ namespace ToDo.Controllers
             {
                 var column = new Column
                 {
-                    Name = model.ColumnName,
+                    Name = model.ColumnName.Trim(),
                     Board = board
                 };
 
@@ -164,7 +164,7 @@ namespace ToDo.Controllers
                 var record = new Record
                 {
                     Column = column,
-                    Value = model.Value
+                    Value = model.Value.Trim()
                 };
 
                 _records.InsertEntity(record);
@@ -255,16 +255,52 @@ namespace ToDo.Controllers
         public IActionResult ChangeBackground(ChangeBackgroundModel model)
         {
             var board = _boards.GetEntityById(model.BoardId);
-            if (board == null)
+            var background = _images.GetEntityById(model.ImageId);
+
+            if (board == null || background == null)
                 return RedirectToAction("Boards");
 
-            var background = _images.GetEntityById(model.ImageId);
             board.Image = background;
 
             _boards.UpdateEntity(board);
             _boards.Save();
 
             return RedirectToAction("Board", new {id = model.BoardId});
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult ChangeColumnName(ChangeEntityModel model)
+        {
+            return ChangeEntity(_columns, model.EntityId, model.Value, model.BoardId);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult ChangeRecordValue(ChangeEntityModel model)
+        {
+            return ChangeEntity(_records, model.EntityId, model.Value, model.BoardId);
+        }
+
+        private IActionResult ChangeEntity<T>(IEntityRepository<T> entities, int id, object value, int boardId)
+        {
+            if (ModelState.IsValid)
+            {
+                var entity = entities.GetEntityById(id);
+
+                if (entity != null)
+                {
+                    typeof(T)
+                       .GetProperties()
+                       .FirstOrDefault(info => info.Name == "Name" || info.Name == "Value")?
+                       .SetValue(entity, value);
+
+                    entities.UpdateEntity(entity);
+                    entities.Save();
+                }
+            }
+
+            return RedirectToAction("Board", new {id = boardId});
         }
 
         [HttpPost]
