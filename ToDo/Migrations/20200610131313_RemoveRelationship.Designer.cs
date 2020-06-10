@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToDo.Data;
 
 namespace ToDo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200610131313_RemoveRelationship")]
+    partial class RemoveRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,9 +25,6 @@ namespace ToDo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("ImageId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -33,8 +32,6 @@ namespace ToDo.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ImageId");
 
                     b.HasIndex("UserId");
 
@@ -149,10 +146,6 @@ namespace ToDo.Migrations
 
             modelBuilder.Entity("ToDo.Entities.Board", b =>
                 {
-                    b.HasOne("ToDo.Entities.Image", "Image")
-                        .WithMany("Boards")
-                        .HasForeignKey("ImageId");
-
                     b.HasOne("ToDo.Entities.User", "User")
                         .WithMany("Boards")
                         .HasForeignKey("UserId")
