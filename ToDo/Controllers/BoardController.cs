@@ -216,7 +216,7 @@ namespace ToDo.Controllers
                 Name = model.File.FileName,
                 ImageType = model.Type,
                 Path = imagePath,
-                Board = board
+                Boards = new List<Board> {board}
             };
             var thumbnail = new Thumbnail
             {

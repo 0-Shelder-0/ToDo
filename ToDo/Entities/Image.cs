@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ToDo.Entities
 {
     public class Image
@@ -10,6 +12,6 @@ namespace ToDo.Entities
         public int ThumbnailId { get; set; }
         public virtual Thumbnail Thumbnail { get; set; }
 
-        public virtual Board Board { get; set; }
+        public virtual IEnumerable<Board> Boards { get; set; }
     }
 }
