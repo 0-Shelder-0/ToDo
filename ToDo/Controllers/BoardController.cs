@@ -95,7 +95,7 @@ namespace ToDo.Controllers
         public IActionResult Boards()
         {
             var user = _users.GetUserByEmail(User.Identity.Name);
-            var model = new AllBoardsModel {Boards = user.Boards};
+            var model = new AllBoardsModel(user.Boards);
 
             return View(model);
         }

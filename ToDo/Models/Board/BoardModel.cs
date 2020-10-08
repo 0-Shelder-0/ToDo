@@ -15,4 +15,12 @@ namespace ToDo.Models.Board
 
         public IEnumerable<Column> Columns { get; set; }
     }
+
+    public class ImageModel
+    {
+        public int ThumbnailId { get; set; }
+        public string ThumbnailPath { get; set; }
+
+        public ImageModel() { }
+    }
 }

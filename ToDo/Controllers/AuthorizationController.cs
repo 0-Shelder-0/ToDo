@@ -55,6 +55,7 @@ namespace ToDo.Controllers
                 }
                 ModelState.AddModelError("Password", "Please enter correct password.");
             }
+            
             return View(loginModel);
         }
 
