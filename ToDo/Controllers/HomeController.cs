@@ -14,23 +14,23 @@ namespace ToDo.Controllers
             _logger = logger;
         }
 
+        [Route("index")]
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Boards", "Board");
             }
-            
             return View();
         }
 
-        [Route("Privacy")]
+        [Route("privacy")]
         public IActionResult Privacy()
         {
             return View();
         }
 
-        [Route("Error")]
+        [Route("error")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

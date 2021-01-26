@@ -21,7 +21,7 @@ function onDrop(event, columnId) {
 async function moveRecord(data) {
     $.ajax({
         type: "POST",
-        url: "Board/MoveRecord",
+        url: "moveRecord",
         data: data
     });
     await sleep(50);

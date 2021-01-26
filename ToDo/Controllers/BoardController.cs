@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using ToDo.Data.Interfaces;
-using ToDo.Data.Repositories;
 using ToDo.Entities;
 using ToDo.Models.Board;
 using ToDo.Models.CreateEntity;
@@ -26,7 +25,6 @@ namespace ToDo.Controllers
         private readonly IColumnRepository _columns;
         private readonly IRecordRepository _records;
         private readonly IImageRepository _images;
-        private readonly IThumbnailRepository _thumbnails;
         private readonly IWebHostEnvironment _appEnvironment;
 
         public BoardController(IUserRepository users,
@@ -34,7 +32,6 @@ namespace ToDo.Controllers
                                IColumnRepository columns,
                                IRecordRepository records,
                                IImageRepository images,
-                               IThumbnailRepository thumbnails,
                                IWebHostEnvironment appEnvironment)
         {
             _users = users;
@@ -42,12 +39,11 @@ namespace ToDo.Controllers
             _columns = columns;
             _records = records;
             _images = images;
-            _thumbnails = thumbnails;
             _appEnvironment = appEnvironment;
         }
 
         [Authorize]
-        [Route("/Board-{id:int}")]
+        [Route("boards/{id:int}")]
         public IActionResult Board(int id)
         {
             var user = _users.GetUserByEmail(User.Identity.Name);
@@ -57,31 +53,24 @@ namespace ToDo.Controllers
             {
                 return RedirectToAction("Boards");
             }
-
             var boardModel = new BoardModel
             {
                 BoardId = board.Id,
                 Name = board.Name,
-                Columns = board.Columns,
+                Columns = board.Columns.Select(column => new ColumnModel(column.Id, column.Name, column.Records)),
                 BackgroundPath = board.Image?.Path,
                 Colors = GetImages(user, ImageType.Color),
                 Images = GetImages(user, ImageType.Image)
             };
-
             return View(boardModel);
         }
 
-        private IEnumerable<Image> GetImages(User user, ImageType type)
+        private IEnumerable<ImageModel> GetImages(User user, ImageType type)
         {
-            return GetDefaultImages()
-                  .Concat(GetUserImages(user))
-                  .Where(image => image.ImageType == type);
-        }
-
-        private IEnumerable<Image> GetDefaultImages()
-        {
-            return _thumbnails.GetDefaultThumbnails()
-                              .Select(thumbnail => thumbnail.Image);
+            return _images.GetDefaultImages()
+                          .Concat(GetUserImages(user))
+                          .Where(image => image.ImageType == type)
+                          .Select(image => new ImageModel(image.ThumbnailId, image.Thumbnail.Path));
         }
 
         private IEnumerable<Image> GetUserImages(User user)
@@ -90,11 +79,15 @@ namespace ToDo.Controllers
         }
 
         [Authorize]
-        [Route("Boards")]
+        [Route("boards")]
         public IActionResult Boards()
         {
             var user = _users.GetUserByEmail(User.Identity.Name);
-            var model = new AllBoardsModel(user.Boards);
+            var model = new AllBoardsModel(
+                user.Boards
+                    .ToList()
+                    .Select(board => new ThumbnailBoard(board.Id, board.Name, board.Image?.Thumbnail?.Path))
+                    .ToList());
 
             return View(model);
         }
@@ -128,8 +121,9 @@ namespace ToDo.Controllers
         {
             var board = _boards.GetEntity(model.BoardId);
             if (board == null)
+            {
                 return RedirectToAction("Boards");
-
+            }
             if (ModelState.IsValid)
             {
                 var column = new Column
@@ -137,7 +131,6 @@ namespace ToDo.Controllers
                     Name = model.ColumnName.Trim(),
                     Board = board
                 };
-
                 _columns.AddEntity(column);
                 _columns.Save();
             }
@@ -145,7 +138,6 @@ namespace ToDo.Controllers
             {
                 ModelState.AddModelError("Name", "Missing name!");
             }
-
             return RedirectToAction("Board", new {id = board.Id});
         }
 
@@ -155,8 +147,9 @@ namespace ToDo.Controllers
         {
             var board = _boards.GetEntity(model.BoardId);
             if (board == null)
+            {
                 return RedirectToAction("Boards");
-
+            }
             if (ModelState.IsValid)
             {
                 var column = board.Columns.FirstOrDefault(col => col.Id == model.ColumnId);
@@ -165,7 +158,6 @@ namespace ToDo.Controllers
                     Column = column,
                     Value = model.Value.Trim()
                 };
-
                 _records.AddEntity(record);
                 _records.Save();
             }
@@ -173,12 +165,12 @@ namespace ToDo.Controllers
             {
                 ModelState.AddModelError("Name", "Missing name!");
             }
-
             return RedirectToAction("Board", new {id = board.Id});
         }
 
         [HttpPost]
         [Authorize]
+        [Route("boards/moveRecord")]
         public IActionResult MoveRecord(MoveRecordModel model)
         {
             var record = _records.GetEntity(model.RecordId);
@@ -191,7 +183,6 @@ namespace ToDo.Controllers
                 _records.UpdateEntity(record);
                 _records.Save();
             }
-
             return RedirectToAction("Board", new {id = column.BoardId});
         }
 
@@ -201,15 +192,15 @@ namespace ToDo.Controllers
         {
             var board = _boards.GetEntity(model.BoardId);
             if (board == null)
+            {
                 return RedirectToAction("Boards");
-
-            var imagePath = $"{ImageStorageFolder}/{model.File.FileName}";
+            }
+            var imagePath = $"/{ImageStorageFolder}/{model.File.FileName}";
             await SaveImageAsync(model, imagePath);
 
             var thumbnailName = $"min.{model.File.FileName}";
-            var thumbnailPath = $"{ThumbnailStorageFolder}/{thumbnailName}";
+            var thumbnailPath = $"/{ThumbnailStorageFolder}/{thumbnailName}";
             SaveThumbnail(model, thumbnailPath);
-
             var image = new Image
             {
                 Name = model.File.FileName,
@@ -225,10 +216,8 @@ namespace ToDo.Controllers
                 Image = image
             };
             image.Thumbnail = thumbnail;
-
             _images.AddEntity(image);
             _images.Save();
-
             return RedirectToAction("Board", new {id = model.BoardId});
         }
 
@@ -237,13 +226,13 @@ namespace ToDo.Controllers
             var sourceImage = new KalikoImage(model.File.OpenReadStream());
             var fitScaling = new FitScaling(192, 108);
             var image = fitScaling.Scale(sourceImage);
-
-            image.SavePng($"{_appEnvironment.WebRootPath}/{thumbnailPath}");
+            image.SavePng($"{_appEnvironment.WebRootPath}{thumbnailPath}");
         }
 
         private async Task SaveImageAsync(CreateBackgroundModel model, string imagePath)
         {
-            await using (var fileStream = new FileStream($"{_appEnvironment.WebRootPath}/{imagePath}", FileMode.Create))
+            var path = $"{_appEnvironment.WebRootPath}{imagePath}";
+            await using (var fileStream = new FileStream(path, FileMode.Create))
             {
                 await model.File.CopyToAsync(fileStream);
             }
@@ -320,7 +309,6 @@ namespace ToDo.Controllers
         {
             _boards.DeleteEntity(boardId);
             _boards.Save();
-
             return RedirectToAction("Boards");
         }
 
@@ -329,7 +317,6 @@ namespace ToDo.Controllers
         {
             repository.DeleteEntity(id);
             repository.Save();
-
             return RedirectToAction("Board", new {id = boardId});
         }
     }

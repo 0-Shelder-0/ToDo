@@ -8,6 +8,7 @@ namespace ToDo.Entities
         public ImageType ImageType { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
+        public bool IsDefault { get; set; }
 
         public int ThumbnailId { get; set; }
         public virtual Thumbnail Thumbnail { get; set; }

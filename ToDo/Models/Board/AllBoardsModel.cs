@@ -9,9 +9,9 @@ namespace ToDo.Models.Board
     {
         public IEnumerable<ThumbnailBoard> Boards { get; }
 
-        public AllBoardsModel(IEnumerable<Entities.Board> boards)
+        public AllBoardsModel(IEnumerable<ThumbnailBoard> boards)
         {
-            Boards = boards.Select(board => new ThumbnailBoard(board));
+            Boards = boards;
         }
     }
 
@@ -21,11 +21,11 @@ namespace ToDo.Models.Board
         public string Name { get; }
         public string ThumbnailPath { get; }
 
-        public ThumbnailBoard(Entities.Board board)
+        public ThumbnailBoard(int id, string name, string thumbnailPath)
         {
-            Id = board.Id;
-            Name = board.Name;
-            ThumbnailPath = board.Image?.Thumbnail?.Path;
+            Id = id;
+            Name = name;
+            ThumbnailPath = thumbnailPath;
         }
     }
 }

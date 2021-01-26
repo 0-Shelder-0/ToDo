@@ -27,17 +27,15 @@ namespace ToDo
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .AddCookie(options => { options.LoginPath = new PathString("/Authorization/Login"); });
+                    .AddCookie(options => { options.LoginPath = new PathString("/login"); });
 
             services.AddControllersWithViews();
             services.AddRazorPages()
                     .AddRazorRuntimeCompilation();
 
-            services.AddDbContext<ApplicationDbContext>(options => options
-                                                                  .UseLazyLoadingProxies()
-                                                                  .UseMySql(
-                                                                       Configuration.GetConnectionString(
-                                                                           "DefaultConnection")));
+            services.AddDbContext<ApplicationDbContext>(options =>
+                                                            options.UseLazyLoadingProxies()
+                                                                   .UseMySql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IBoardRepository, BoardRepository>();
             services.AddTransient<IColumnRepository, ColumnRepository>();
@@ -55,7 +53,7 @@ namespace ToDo
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
@@ -68,18 +66,16 @@ namespace ToDo
             });
 
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
                              {
                                  endpoints.MapControllerRoute(
-                                     name: "home",
-                                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                                     name: "default",
+                                     pattern: "{controller=home}/{action=index}/{id?}");
                              });
 
-            app.UseStatusCodePagesWithRedirects("/Error");
+            app.UseStatusCodePagesWithRedirects("/error");
         }
     }
 }
