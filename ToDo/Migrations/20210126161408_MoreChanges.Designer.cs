@@ -9,8 +9,8 @@ using ToDo.Data;
 namespace ToDo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200609143010_ThumbnailChange")]
-    partial class ThumbnailChange
+    [Migration("20210126161408_MoreChanges")]
+    partial class MoreChanges
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,8 +36,7 @@ namespace ToDo.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageId")
-                        .IsUnique();
+                    b.HasIndex("ImageId");
 
                     b.HasIndex("UserId");
 
@@ -114,6 +113,9 @@ namespace ToDo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -153,8 +155,8 @@ namespace ToDo.Migrations
             modelBuilder.Entity("ToDo.Entities.Board", b =>
                 {
                     b.HasOne("ToDo.Entities.Image", "Image")
-                        .WithOne("Board")
-                        .HasForeignKey("ToDo.Entities.Board", "ImageId");
+                        .WithMany("Boards")
+                        .HasForeignKey("ImageId");
 
                     b.HasOne("ToDo.Entities.User", "User")
                         .WithMany("Boards")

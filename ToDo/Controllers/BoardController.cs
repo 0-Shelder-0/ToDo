@@ -7,8 +7,9 @@ using Kaliko.ImageLibrary.Scaling;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using ToDo.Data.Interfaces;
+using ToDo.Data.Repositories;
 using ToDo.Entities;
-using ToDo.Interfaces;
 using ToDo.Models.Board;
 using ToDo.Models.CreateEntity;
 using ToDo.Models.RemoveEntity;
@@ -79,10 +80,8 @@ namespace ToDo.Controllers
 
         private IEnumerable<Image> GetDefaultImages()
         {
-            return _thumbnails
-                  .GetThumbnails()
-                  .Where(thumbnail => thumbnail.User == null)
-                  .Select(thumbnail => thumbnail.Image);
+            return _thumbnails.GetDefaultThumbnails()
+                              .Select(thumbnail => thumbnail.Image);
         }
 
         private IEnumerable<Image> GetUserImages(User user)
@@ -113,7 +112,7 @@ namespace ToDo.Controllers
                     User = user,
                 };
 
-                _boards.InsertEntity(board);
+                _boards.AddEntity(board);
                 _boards.Save();
 
                 return RedirectToAction("Board", new {id = board.Id});
@@ -127,7 +126,7 @@ namespace ToDo.Controllers
         [Authorize]
         public IActionResult CreateColumn(CreateColumnModel model)
         {
-            var board = _boards.GetEntityById(model.BoardId);
+            var board = _boards.GetEntity(model.BoardId);
             if (board == null)
                 return RedirectToAction("Boards");
 
@@ -139,7 +138,7 @@ namespace ToDo.Controllers
                     Board = board
                 };
 
-                _columns.InsertEntity(column);
+                _columns.AddEntity(column);
                 _columns.Save();
             }
             else
@@ -154,7 +153,7 @@ namespace ToDo.Controllers
         [Authorize]
         public IActionResult CreateRecord(CreateRecordModel model)
         {
-            var board = _boards.GetEntityById(model.BoardId);
+            var board = _boards.GetEntity(model.BoardId);
             if (board == null)
                 return RedirectToAction("Boards");
 
@@ -167,7 +166,7 @@ namespace ToDo.Controllers
                     Value = model.Value.Trim()
                 };
 
-                _records.InsertEntity(record);
+                _records.AddEntity(record);
                 _records.Save();
             }
             else
@@ -182,8 +181,8 @@ namespace ToDo.Controllers
         [Authorize]
         public IActionResult MoveRecord(MoveRecordModel model)
         {
-            var record = _records.GetEntityById(model.RecordId);
-            var column = _columns.GetEntityById(model.NewColumnId);
+            var record = _records.GetEntity(model.RecordId);
+            var column = _columns.GetEntity(model.NewColumnId);
 
             if (record != null && column != null)
             {
@@ -200,7 +199,7 @@ namespace ToDo.Controllers
         [Authorize]
         public async Task<IActionResult> CreateBackground(CreateBackgroundModel model)
         {
-            var board = _boards.GetEntityById(model.BoardId);
+            var board = _boards.GetEntity(model.BoardId);
             if (board == null)
                 return RedirectToAction("Boards");
 
@@ -227,7 +226,7 @@ namespace ToDo.Controllers
             };
             image.Thumbnail = thumbnail;
 
-            _images.InsertEntity(image);
+            _images.AddEntity(image);
             _images.Save();
 
             return RedirectToAction("Board", new {id = model.BoardId});
@@ -254,14 +253,13 @@ namespace ToDo.Controllers
         [Authorize]
         public IActionResult ChangeBackground(ChangeBackgroundModel model)
         {
-            var board = _boards.GetEntityById(model.BoardId);
-            var background = _images.GetEntityById(model.ImageId);
-
+            var board = _boards.GetEntity(model.BoardId);
+            var background = _images.GetEntity(model.ImageId);
             if (board == null || background == null)
+            {
                 return RedirectToAction("Boards");
-
+            }
             board.Image = background;
-
             _boards.UpdateEntity(board);
             _boards.Save();
 
@@ -272,35 +270,34 @@ namespace ToDo.Controllers
         [Authorize]
         public IActionResult ChangeColumnName(ChangeEntityModel model)
         {
-            return ChangeEntity(_columns, model.EntityId, model.Value, model.BoardId);
+            if (ModelState.IsValid)
+            {
+                var column = _columns.GetEntity(model.EntityId);
+                if (column != null)
+                {
+                    column.Name = model.Value;
+                    _columns.UpdateEntity(column);
+                    _columns.Save();
+                }
+            }
+            return RedirectToAction("Board", new {id = model.BoardId});
         }
 
         [HttpPost]
         [Authorize]
         public IActionResult ChangeRecordValue(ChangeEntityModel model)
         {
-            return ChangeEntity(_records, model.EntityId, model.Value, model.BoardId);
-        }
-
-        private IActionResult ChangeEntity<T>(IEntityRepository<T> entities, int id, object value, int boardId)
-        {
             if (ModelState.IsValid)
             {
-                var entity = entities.GetEntityById(id);
-
-                if (entity != null)
+                var record = _records.GetEntity(model.EntityId);
+                if (record != null)
                 {
-                    typeof(T)
-                       .GetProperties()
-                       .FirstOrDefault(info => info.Name == "Name" || info.Name == "Value")?
-                       .SetValue(entity, value);
-
-                    entities.UpdateEntity(entity);
-                    entities.Save();
+                    record.Value = model.Value;
+                    _records.UpdateEntity(record);
+                    _records.Save();
                 }
             }
-
-            return RedirectToAction("Board", new {id = boardId});
+            return RedirectToAction("Board", new {id = model.BoardId});
         }
 
         [HttpPost]
@@ -327,7 +324,8 @@ namespace ToDo.Controllers
             return RedirectToAction("Boards");
         }
 
-        private IActionResult RemoveEntity<T>(IEntityRepository<T> repository, int id, int boardId)
+        private IActionResult RemoveEntity<TEntity>(IEntityRepository<TEntity> repository, int id, int boardId)
+            where TEntity : IEntity
         {
             repository.DeleteEntity(id);
             repository.Save();

@@ -8,7 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ToDo.Data;
-using ToDo.Interfaces;
+using ToDo.Data.Interfaces;
+using ToDo.Data.Repositories;
 
 namespace ToDo
 {
@@ -34,7 +35,9 @@ namespace ToDo
 
             services.AddDbContext<ApplicationDbContext>(options => options
                                                                   .UseLazyLoadingProxies()
-                                                                  .UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+                                                                  .UseMySql(
+                                                                       Configuration.GetConnectionString(
+                                                                           "DefaultConnection")));
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IBoardRepository, BoardRepository>();
             services.AddTransient<IColumnRepository, ColumnRepository>();
@@ -58,7 +61,10 @@ namespace ToDo
             app.UseHttpsRedirection();
             app.UseStaticFiles(new StaticFileOptions
             {
-                OnPrepareResponse = context => { context.Context.Response.Headers.Add("Cache-Control", "public,max-age=1800"); }
+                OnPrepareResponse = context =>
+                                    {
+                                        context.Context.Response.Headers.Add("Cache-Control", "public,max-age=1800");
+                                    }
             });
 
             app.UseRouting();

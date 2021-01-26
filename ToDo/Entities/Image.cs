@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace ToDo.Entities
 {
-    public class Image
+    public class Image : IEntity
     {
         public int Id { get; set; }
         public ImageType ImageType { get; set; }

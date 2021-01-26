@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SaltyHasher;
+using ToDo.Data.Interfaces;
 using ToDo.Entities;
-using ToDo.Interfaces;
 using ToDo.Models.Account;
 
 namespace ToDo.Controllers
@@ -55,7 +55,7 @@ namespace ToDo.Controllers
                 }
                 ModelState.AddModelError("Password", "Please enter correct password.");
             }
-            
+
             return View(loginModel);
         }
 
@@ -92,7 +92,7 @@ namespace ToDo.Controllers
                     Salt = saltyHash.Salt
                 };
 
-                _userRepository.InsertEntity(user);
+                _userRepository.AddEntity(user);
                 _userRepository.Save();
 
                 await Authenticate(registerModel.Email);
