@@ -8,7 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ToDo.Data;
-using ToDo.Interfaces;
+using ToDo.Data.Interfaces;
+using ToDo.Data.Repositories;
 
 namespace ToDo
 {
@@ -26,21 +27,21 @@ namespace ToDo
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .AddCookie(options => { options.LoginPath = new PathString("/Authorization/Login"); });
+                    .AddCookie(options => { options.LoginPath = new PathString("/login"); });
 
             services.AddControllersWithViews();
             services.AddRazorPages()
                     .AddRazorRuntimeCompilation();
 
-            services.AddDbContext<ApplicationDbContext>(options => options
-                                                                  .UseLazyLoadingProxies()
-                                                                  .UseMySql(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IBoardRepository, BoardRepository>();
-            services.AddTransient<IColumnRepository, ColumnRepository>();
-            services.AddTransient<IRecordRepository, RecordRepository>();
-            services.AddTransient<IImageRepository, ImageRepository>();
-            services.AddTransient<IThumbnailRepository, ThumbnailRepository>();
+            services.AddDbContext<ApplicationDbContext>(options =>
+                                                            options.UseLazyLoadingProxies()
+                                                                   .UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IBoardRepository, BoardRepository>();
+            services.AddScoped<IColumnRepository, ColumnRepository>();
+            services.AddScoped<IRecordRepository, RecordRepository>();
+            services.AddScoped<IImageRepository, ImageRepository>();
+            services.AddScoped<IThumbnailRepository, ThumbnailRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -52,28 +53,29 @@ namespace ToDo
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles(new StaticFileOptions
             {
-                OnPrepareResponse = context => { context.Context.Response.Headers.Add("Cache-Control", "public,max-age=1800"); }
+                OnPrepareResponse = context =>
+                                    {
+                                        context.Context.Response.Headers.Add("Cache-Control", "public,max-age=1800");
+                                    }
             });
 
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
                              {
                                  endpoints.MapControllerRoute(
-                                     name: "home",
-                                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                                     name: "default",
+                                     pattern: "{controller=home}/{action=index}/{id?}");
                              });
 
-            app.UseStatusCodePagesWithRedirects("/Error");
+            app.UseStatusCodePagesWithRedirects("/error");
         }
     }
 }

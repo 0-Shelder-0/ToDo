@@ -6,4 +6,3 @@ $('textarea').keypress(function (event) {
         event.preventDefault();
     }
 });
-

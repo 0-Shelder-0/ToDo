@@ -1,5 +1,5 @@
-@using ToDo.Models.CreateEntity
 @using ToDo.Models.RemoveEntity
+@using ToDo.Models.CreateEntity
 @model ToDo.Models.Board.AllBoardsModel
 @{
     ViewData["Title"] = "Boards";
@@ -17,7 +17,7 @@
                 <div class="col-sm-3 board">
                     <div class="default-background">
                         <a asp-controller="Board" asp-action="Board" asp-route-id="@board.Id">
-                            <div class="board-container text-center d-flex board-thumbnail" style="background-image: url(@board.Image?.Thumbnail?.Path)">
+                            <div class="board-container text-center d-flex board-thumbnail" style="background-image: url(@Context.Request.Scheme://@Context.Request.Host/@board.ThumbnailPath)">
                                 <div class="flex-grow-1 board-name unselectable">
                                     @board.Name
                                 </div>

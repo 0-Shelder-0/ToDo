@@ -1,6 +1,6 @@
 namespace ToDo.Entities
 {
-    public class Record
+    public class Record : IEntity
     {
         public int Id { get; set; }
         public string Value { get; set; }

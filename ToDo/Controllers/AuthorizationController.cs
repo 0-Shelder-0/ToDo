@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SaltyHasher;
+using ToDo.Data.Interfaces;
 using ToDo.Entities;
-using ToDo.Interfaces;
 using ToDo.Models.Account;
 
 namespace ToDo.Controllers
@@ -22,19 +22,18 @@ namespace ToDo.Controllers
         }
 
         [HttpGet]
-        [Route("Login")]
+        [Route("login")]
         public IActionResult Login()
         {
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Boards", "Board");
             }
-
             return View();
         }
 
         [HttpPost]
-        [Route("Login")]
+        [Route("login")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
@@ -46,7 +45,7 @@ namespace ToDo.Controllers
                     ModelState.AddModelError("Email", "User with this email does not exist.");
                     return View(loginModel);
                 }
-
+                
                 var saltyHash = new SaltyHash(user.Hash, user.Salt);
                 if (saltyHash.Validate(loginModel.Password))
                 {
@@ -59,19 +58,18 @@ namespace ToDo.Controllers
         }
 
         [HttpGet]
-        [Route("SignUp")]
+        [Route("signUp")]
         public IActionResult SignUp()
         {
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Boards", "Board");
             }
-
             return View();
         }
 
         [HttpPost]
-        [Route("SignUp")]
+        [Route("signUp")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUp(RegisterModel registerModel)
         {
@@ -82,7 +80,7 @@ namespace ToDo.Controllers
                     ModelState.AddModelError("Email", "A user with this email already exists.");
                     return View(registerModel);
                 }
-
+                
                 var saltyHash = SaltyHash.Create(registerModel.Password);
                 var user = new User
                 {
@@ -90,15 +88,12 @@ namespace ToDo.Controllers
                     Hash = saltyHash.Hash,
                     Salt = saltyHash.Salt
                 };
-
-                _userRepository.InsertEntity(user);
+                _userRepository.AddEntity(user);
                 _userRepository.Save();
-
                 await Authenticate(registerModel.Email);
-
+                
                 return RedirectToAction("Index", "Home");
             }
-
             return View(registerModel);
         }
 
@@ -110,15 +105,15 @@ namespace ToDo.Controllers
         }
 
         [Authorize]
-        [Route("Settings")]
+        [Route("settings")]
         public IActionResult Settings()
         {
             return View();
         }
 
         [HttpPost]
+        [Route("changePassword")]
         [Authorize]
-        [Route("ChangePassword")]
         [ValidateAntiForgeryToken]
         public IActionResult ChangePassword(ChangePasswordModel model)
         {
@@ -126,15 +121,13 @@ namespace ToDo.Controllers
             {
                 var user = _userRepository.GetUserByEmail(User.Identity.Name);
                 var saltyHash = new SaltyHash(user.Hash, user.Salt);
-
+                
                 if (saltyHash.Validate(model.CurrentPassword))
                 {
                     var newPassword = SaltyHash.Create(model.NewPassword);
                     (user.Hash, user.Salt) = (newPassword.Hash, newPassword.Salt);
-
                     _userRepository.UpdateEntity(user);
                     _userRepository.Save();
-
                     ViewData.Add("Success", "Password change was successful!");
                 }
                 else
@@ -142,7 +135,6 @@ namespace ToDo.Controllers
                     ModelState.AddModelError("CurrentPassword", "Please enter correct password.");
                 }
             }
-
             return View("Settings");
         }
 

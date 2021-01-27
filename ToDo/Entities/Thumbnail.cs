@@ -1,6 +1,6 @@
 namespace ToDo.Entities
 {
-    public class Thumbnail
+    public class Thumbnail : IEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }
