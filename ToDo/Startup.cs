@@ -36,12 +36,12 @@ namespace ToDo
             services.AddDbContext<ApplicationDbContext>(options =>
                                                             options.UseLazyLoadingProxies()
                                                                    .UseMySql(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IBoardRepository, BoardRepository>();
-            services.AddTransient<IColumnRepository, ColumnRepository>();
-            services.AddTransient<IRecordRepository, RecordRepository>();
-            services.AddTransient<IImageRepository, ImageRepository>();
-            services.AddTransient<IThumbnailRepository, ThumbnailRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IBoardRepository, BoardRepository>();
+            services.AddScoped<IColumnRepository, ColumnRepository>();
+            services.AddScoped<IRecordRepository, RecordRepository>();
+            services.AddScoped<IImageRepository, ImageRepository>();
+            services.AddScoped<IThumbnailRepository, ThumbnailRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

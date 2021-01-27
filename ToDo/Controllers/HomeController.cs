@@ -14,7 +14,6 @@ namespace ToDo.Controllers
             _logger = logger;
         }
 
-        [Route("index")]
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)

@@ -121,15 +121,13 @@ namespace ToDo.Controllers
             {
                 var user = _userRepository.GetUserByEmail(User.Identity.Name);
                 var saltyHash = new SaltyHash(user.Hash, user.Salt);
-
+                
                 if (saltyHash.Validate(model.CurrentPassword))
                 {
                     var newPassword = SaltyHash.Create(model.NewPassword);
                     (user.Hash, user.Salt) = (newPassword.Hash, newPassword.Salt);
-
                     _userRepository.UpdateEntity(user);
                     _userRepository.Save();
-
                     ViewData.Add("Success", "Password change was successful!");
                 }
                 else
